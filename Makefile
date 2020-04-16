@@ -1,13 +1,16 @@
-all: client server resetdb
+INCDIR = ./include/
+CFLAGS = -Wall -O2 -std=c11
 
-client: client.c
-	gcc client.c -O2 -std=c11 -o client.x
+all: bin_dir client server resetdb
 
-server: server.c
-	gcc server.c -O2 -std=c11 -o server.x
+client: src/client.c
+	gcc src/client.c -O2 -std=c11 -o bin/client.x -I$(INCDIR)
 
-resetdb: resetdb.c
-	gcc resetdb.c -std=c99 -lsqlite3 -o resetdb.x
+server: src/server.c src/dbinterface.c
+	gcc src/server.c src/dbinterface.c -O2 -std=c11 -o bin/server.x -lsqlite3 -I$(INCDIR)
 
-dbtest: dbtest.c dbinterface.c dbinterface.h
-	gcc dbtest.c dbinterface.c -std=c99 -lsqlite3 -o test.x
+resetdb: src/resetdb.c
+	gcc src/resetdb.c -std=c99 -lsqlite3 -o bin/resetdb.x -I$(INCDIR)
+
+bin_dir:
+	@mkdir -p bin

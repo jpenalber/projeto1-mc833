@@ -1,4 +1,4 @@
-#include "dbinterface.h"
+#include <dbinterface.h>
 
 sqlite3 *db;
 
@@ -85,7 +85,7 @@ int insertFilme(char *nome, char *descricao) {
 
 
     sqlite3_int64 id = sqlite3_last_insert_rowid(db);
-    printf("Filme ID: %lld", id);
+    printf("Filme ID: %lld\n", id);
 
     sqlite3_finalize(stmt);
 
