@@ -26,20 +26,15 @@ int main(int argc, char *argv[]) {
        return 1;
     }
 
-    struct packet send_buffer = {
+    struct packet packet = {
         .type = PT_INSERT_FILME,
         .data = "Frozen\0Aquele do boneco de neve\0"
     };
-    write(sockfd, &send_buffer, sizeof(send_buffer));
+    write(sockfd, &packet, sizeof(packet));
 
-    /*
-    int n;
-    while ((n = read(sockfd, recvBuff, sizeof(recvBuff)-1)) > 0) {
-        puts("Reading connection");
-        recvBuff[n] = 0;
-        fputs(recvBuff, stdout);
+    while (read(sockfd, &packet, sizeof(packet)) > 0) {
+        printf("ID %d\n", ((int *)packet.data)[0]);
     }
-    */
 
     close(sockfd);
 

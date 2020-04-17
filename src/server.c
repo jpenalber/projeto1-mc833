@@ -32,26 +32,44 @@ int main(int argc, char *argv[]) {
     while(1) {
         puts("Accepting...");
         connfd = accept(listenfd, (struct sockaddr*)NULL, NULL);
-        puts("Accepted connection");
 
-        struct packet recv_buffer = {0};
-        int read_n = read(connfd, &recv_buffer, sizeof(recv_buffer));
-
-        switch (recv_buffer.type) {
-        case PT_INSERT_SALA:
-            insertSala(recv_buffer.data);
-            break;
-        case PT_INSERT_FILME:
-            {
-                int desc = findNextString(0, recv_buffer.data);
-                insertFilme(recv_buffer.data, &recv_buffer.data[desc]);
-            }
-            break;
-        default:
-            puts("Malformed packet");
+        if (fork()) {
+            // Parent
+            close(connfd);
         }
+        else {
+            // Child
+            struct packet packet = {0};
+            int read_n = read(connfd, &packet, sizeof(packet));
 
-        close(connfd);
-        sleep(1);
+            switch (packet.type) {
+                case PT_INSERT_SALA:
+                    {
+                        int id = insertSala(packet.data);
+
+                        packet.type = PT_INSERT_SALA_ID;
+                        memcpy(packet.data, &id, sizeof(id));
+
+                        write(connfd, &packet, sizeof(packet));
+                    }
+                    break;
+                case PT_INSERT_FILME:
+                    {
+                        int desc = findNextString(0, packet.data);
+                        int id = insertFilme(packet.data, &packet.data[desc]);
+
+                        packet.type = PT_INSERT_FILME_ID;
+                        memcpy(packet.data, &id, sizeof(id));
+
+                        write(connfd, &packet, sizeof(packet));
+                    }
+                    break;
+                default:
+                    puts("Malformed packet");
+            }
+
+            close(connfd);
+            return 0;
+        }
     }
 }
