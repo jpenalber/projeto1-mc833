@@ -4,7 +4,6 @@
 sqlite3 *db;
 
 int open_db(char *path) {
-    
     int rc = sqlite3_open(path, &db);
 
     if (rc != SQLITE_OK) {
@@ -15,6 +14,7 @@ int open_db(char *path) {
         return -1;
     }
 
+    return 0;
 }
 
 int insertSala(char *tipo) {
@@ -33,8 +33,6 @@ int insertSala(char *tipo) {
         return -1;
     }
 
-    char *err_msg = 0;
-    
     rc = sqlite3_step(stmt);
     if (rc != SQLITE_DONE ) {      
         fprintf(stderr, "insert statement didn't return DONE (%i): %s\n", rc, sqlite3_errmsg(db));              
@@ -51,7 +49,7 @@ int insertSala(char *tipo) {
 }
 
 int insertFilmeStruct(s_filme filme) {
-    insertFilme(filme.nome, filme.genero, filme.descricao);
+    return insertFilme(filme.nome, filme.genero, filme.descricao);
 }
 
 int insertFilme(char *nome, char *genero, char *descricao) {
@@ -82,8 +80,6 @@ int insertFilme(char *nome, char *genero, char *descricao) {
         return -1;
     }
 
-    char *err_msg = 0;
-    
     rc = sqlite3_step(stmt);
     if (rc != SQLITE_DONE ) {      
         fprintf(stderr, "insert statement didn't return DONE (%i): %s\n", rc, sqlite3_errmsg(db));              
@@ -121,8 +117,6 @@ int insertExibicao(int sala_id, int filme_id) {
         return -1;
     }
 
-    char *err_msg = 0;
-    
     rc = sqlite3_step(stmt);
     if (rc != SQLITE_DONE ) {      
         fprintf(stderr, "insert statement didn't return DONE (%i): %s\n", rc, sqlite3_errmsg(db));              
@@ -169,9 +163,9 @@ int getFilmeIDByNome(char *nome) {
     return (int) id;
 }
 
-char *cpytext(char *text) {
-    char *new_text = calloc(strlen(text)+1, sizeof(char));
-    strcpy(new_text, text);
+char *cpytext(const unsigned char *text) {
+    char *new_text = calloc(strlen((const char *)text)+1, sizeof(char));
+    strcpy(new_text, (const char *)text);
     return new_text;
 }
 
