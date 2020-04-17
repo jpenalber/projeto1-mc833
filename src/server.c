@@ -55,8 +55,9 @@ int main(int argc, char *argv[]) {
                     break;
                 case PT_INSERT_FILME:
                     {
-                        int desc = findNextString(0, packet.data);
-                        int id = insertFilme(packet.data, &packet.data[desc]);
+                        int gen = findNextString(0, packet.data);
+                        int desc = findNextString(gen, packet.data);
+                        int id = insertFilme(packet.data, &packet.data[gen], &packet.data[desc]);
 
                         packet.type = PT_INSERT_FILME_ID;
                         memcpy(packet.data, &id, sizeof(id));

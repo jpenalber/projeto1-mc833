@@ -10,3 +10,8 @@ struct packet {
     enum packet_type type;
     unsigned char data[1024];
 };
+
+typedef struct LinkedList {
+    void *data;
+    struct LinkedList *next;
+} linked_list;

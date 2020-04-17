@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
 
     struct packet packet = {
         .type = PT_INSERT_FILME,
-        .data = "Frozen\0Aquele do boneco de neve\0"
+        .data = "Frozen\0Aventura\0Aquele do boneco de neve\0"
     };
     write(sockfd, &packet, sizeof(packet));
 
