@@ -14,16 +14,23 @@ int findNextString(int start, char *buffer) {
 }
 
 int main(int argc, char *argv[]) {
-    int listenfd = 0, connfd = 0;
+    int listenfd = 0;
+
+    if ((listenfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+        puts("Could not create socket");
+        return 1;
+    }
+
     struct sockaddr_in serv_addr = {0};
-
-    listenfd = socket(AF_INET, SOCK_STREAM, 0);
-
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    serv_addr.sin_port = htons(5000);
+    serv_addr.sin_port = htons(SERVER_PORT);
 
-    bind(listenfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
+    if (bind(listenfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
+        puts("Could not bind socket");
+        close(listenfd);
+        return 1;
+    }
 
     listen(listenfd, 10);
 
@@ -31,7 +38,7 @@ int main(int argc, char *argv[]) {
 
     while(1) {
         puts("Accepting...");
-        connfd = accept(listenfd, (struct sockaddr*)NULL, NULL);
+        int connfd = accept(listenfd, (struct sockaddr*)NULL, NULL);
 
         if (fork()) {
             // Parent

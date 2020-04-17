@@ -5,7 +5,6 @@
 #include <common.h>
 
 #define SERVER_IP "localhost"
-#define SERVER_PORT 5000
 
 int main(int argc, char *argv[]) {
     int sockfd = 0;
