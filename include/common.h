@@ -1,3 +1,5 @@
+#define SERVER_PORT 5000
+
 enum packet_type {
     PT_INSERT_SALA,
     PT_INSERT_FILME,
