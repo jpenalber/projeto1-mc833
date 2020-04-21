@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <string.h>
 
 #include <common.h>
 
@@ -25,14 +26,70 @@ int main(int argc, char *argv[]) {
        return 1;
     }
 
-    struct packet packet = {
-        .type = PT_INSERT_FILME,
-        .data = "Frozen\0Aventura\0Aquele do boneco de neve\0"
-    };
-    write(sockfd, &packet, sizeof(packet));
+    while (1) {
+        char type[40];
+        scanf(" %s", type);
 
-    while (read(sockfd, &packet, sizeof(packet)) > 0) {
-        printf("ID %d\n", ((int *)packet.data)[0]);
+        struct packet packet = {0};
+        if (!strcmp(type, "inserir")) {
+            packet.type = PT_INSERT_FILME;
+            scanf(" %[^\n]s", packet.data); //Nome
+            int len = strlen(packet.data)+1;
+            scanf(" %[^\n]s", &packet.data[len]); //Genero
+            len += strlen(&packet.data[len])+1;
+            scanf(" %[^\n]s", &packet.data[len]); //Descricao
+
+            write(sockfd, &packet, sizeof(packet));
+            read(sockfd, &packet, sizeof(packet));
+            printf("ID %d\n", ((int *)packet.data)[0]);
+        }
+        else if (!strcmp(type, "remover")) {
+            packet.type = PT_REMOVE_FILME;
+            scanf(" %d", (int *) &packet.data);
+
+            write(sockfd, &packet, sizeof(packet));
+        }
+        else if (!strcmp(type, "listar_titulo")) {
+            packet.type = PT_LIST_TITULO_SALA;
+
+            write(sockfd, &packet, sizeof(packet));
+            read(sockfd, &packet, sizeof(packet));
+            printf("%s\n", packet.data);
+        }
+        else if (!strcmp(type, "listar_genero")) {
+            packet.type = PT_LIST_GENERO;
+            scanf(" %[^\n]s", packet.data);
+
+            write(sockfd, &packet, sizeof(packet));
+            read(sockfd, &packet, sizeof(packet));
+            printf("%s\n", packet.data);
+        }
+        else if (!strcmp(type, "nome")) {
+            packet.type = PT_FILM_NAME_FROM_ID;
+            scanf(" %d", (int *) &packet.data);
+
+            write(sockfd, &packet, sizeof(packet));
+            read(sockfd, &packet, sizeof(packet));
+            printf("%s\n", packet.data);
+        }
+        else if (!strcmp(type, "info")) {
+            packet.type = PT_FILM_INFO_FROM_ID;
+            scanf(" %d", (int *) &packet.data);
+
+            write(sockfd, &packet, sizeof(packet));
+            read(sockfd, &packet, sizeof(packet));
+            printf("%s\n", packet.data);
+        }
+        else if (!strcmp(type, "tudo")) {
+            packet.type = PT_LIST_ALL;
+
+            write(sockfd, &packet, sizeof(packet));
+            read(sockfd, &packet, sizeof(packet));
+            printf("%s\n", packet.data);
+        }
+        else {
+            break;
+        }
     }
 
     close(sockfd);
