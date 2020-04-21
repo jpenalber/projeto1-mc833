@@ -3,6 +3,10 @@
 
 sqlite3 *db;
 
+void linked_list_push(linked_list *list, void *data);
+
+void *linked_list_pop(linked_list *list);
+
 int open_db(char *path) {
     int rc = sqlite3_open(path, &db);
 
@@ -163,14 +167,44 @@ int getFilmeIDByNome(char *nome) {
     return (int) id;
 }
 
+char *getFilmeNomeByID(int filme_id) {
+    char *sql = "SELECT nome FROM Filmes WHERE filme_id = ? LIMIT 1;";
+    sqlite3_stmt *stmt;
+
+    int rc = sqlite3_prepare_v2 (db, sql, -1, &stmt, NULL);
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepere statment: %s\n", sqlite3_errmsg(db));
+        return NULL;
+    }
+
+    rc = sqlite3_bind_int(stmt, 1, filme_id);
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "Cannot bind data: %s\n", sqlite3_errmsg(db));
+        return NULL;
+    }
+
+    char *nome = NULL;
+    rc = sqlite3_step(stmt);
+    if (rc == SQLITE_ROW) {
+        nome = cpytext(sqlite3_column_text(stmt, 0));
+        fprintf(stderr, "Filme Name: %s\n", nome);
+    } else {
+        fprintf(stderr, "Filme not found!\n");
+    }
+
+    sqlite3_finalize(stmt);
+
+    return nome;
+}
+
 char *cpytext(const unsigned char *text) {
     char *new_text = calloc(strlen((const char *)text)+1, sizeof(char));
     strcpy(new_text, (const char *)text);
     return new_text;
 }
 
-int getFilmeByNome(char *nome, s_filme *filme) {
-    char *sql = "SELECT * FROM Filmes WHERE Nome = ? LIMIT 1;";
+int getFilmeByID(int filme_id, s_filme *filme) {
+    char *sql = "SELECT * FROM Filmes WHERE filme_id = ? LIMIT 1;";
     sqlite3_stmt *stmt;
 
     int rc = sqlite3_prepare_v2 (db, sql, -1, &stmt, NULL);
@@ -179,7 +213,7 @@ int getFilmeByNome(char *nome, s_filme *filme) {
         return -1;
     }
 
-    rc = sqlite3_bind_text(stmt, 1, nome, strlen(nome), 0);
+    rc = sqlite3_bind_int(stmt, 1, filme_id);
     if (rc != SQLITE_OK) {
         fprintf(stderr, "Cannot bind data: %s\n", sqlite3_errmsg(db));
         return -1;
@@ -201,7 +235,58 @@ int getFilmeByNome(char *nome, s_filme *filme) {
 
     sqlite3_finalize(stmt);
 
+    if (id >= 0) {
+        char *sql = "SELECT sala_id FROM Exibicao WHERE filme_id = ?;";
+
+        int rc = sqlite3_prepare_v2 (db, sql, -1, &stmt, NULL);
+        if (rc != SQLITE_OK) {
+            fprintf(stderr, "Cannot prepere statment: %s\n", sqlite3_errmsg(db));
+            return -1;
+        }
+
+        rc = sqlite3_bind_int(stmt, 1, filme_id);
+        if (rc != SQLITE_OK) {
+            fprintf(stderr, "Cannot bind data: %s\n", sqlite3_errmsg(db));
+            return -1;
+        }
+
+        linked_list *list = calloc(1, sizeof(linked_list));
+        int count = 0;
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            int *sala = calloc(1, sizeof(linked_list));
+            *sala = (int) sqlite3_column_int64(stmt, 0);
+            linked_list_push(list, sala);
+            count++;
+        }
+
+        filme->num_salas = count;
+        filme->salas = calloc(count, sizeof(int));
+        for (int i = count; count >= 1 && list->next != NULL; i--) {
+            int *p = (int *) linked_list_pop(list);
+            filme->salas[i-1] = *p;
+        }
+        free(list);
+        sqlite3_finalize(stmt);
+    }
+
+    
+
     return id;
+}
+
+void linked_list_push(linked_list *list, void *data) {
+    linked_list *last = list->next;
+    list->next = calloc(1, sizeof(linked_list));
+    list->next->data = data;
+    list->next->next = last;
+}
+
+void* linked_list_pop(linked_list *list) {
+    void *data = list->next->data;
+    linked_list *last = list->next;
+    list->next = list->next->next;
+    free(last);
+    return data;
 }
 
 int getFilmesByGenero(char *genero, s_filme ***filmes) {
@@ -220,7 +305,6 @@ int getFilmesByGenero(char *genero, s_filme ***filmes) {
         return -1;
     }
 
-    int id;
     linked_list *list = calloc(1, sizeof(linked_list));
     int count = 0;
     while (sqlite3_step(stmt) == SQLITE_ROW) {
@@ -229,20 +313,13 @@ int getFilmesByGenero(char *genero, s_filme ***filmes) {
         filme->nome = cpytext(sqlite3_column_text(stmt, 1));
         filme->genero = cpytext(sqlite3_column_text(stmt, 2));
         filme->descricao = cpytext(sqlite3_column_text(stmt, 3));
-        id = filme->id;
-        linked_list *last = list->next;
-        list->next = calloc(1, sizeof(linked_list));
-        list->next->data = filme;
-        list->next->next = last;
+        linked_list_push(list, filme);
         count++;
     }
 
     *(filmes) = calloc(count, sizeof(s_filme*));
     for (int i = count; count >= 1 && list->next != NULL; i--) {
-        (*(filmes))[i-1] = (s_filme *)list->next->data;
-        linked_list *last = list->next;
-        list->next = list->next->next;
-        free(last);
+        (*(filmes))[i-1] = (s_filme *) linked_list_pop(list);
     }
     free(list);
 

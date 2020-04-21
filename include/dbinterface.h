@@ -14,8 +14,14 @@ int insertFilmeStruct(s_filme filme);
 // Inset a Film and return ID
 int insertFilme(char *nome, char *genero, char *descricao);
 
+int insertExibicao(int sala_id, int filme_id);
+
 int getFilmeIDByNome(char *nome);
 
-int getFilmeByNome(char *nome, s_filme *filme);
+int getFilmeByID(int filme_id, s_filme *filme);
+
+char *getFilmeNomeByID(int filme_id);
 
 int getFilmesByGenero(char *genero, s_filme ***filmes);
+
+char *cpytext(const unsigned char *text);
