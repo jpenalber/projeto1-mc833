@@ -14,6 +14,10 @@ int insertFilmeStruct(s_filme filme);
 // Inset a Film and return ID
 int insertFilme(char *nome, char *genero, char *descricao);
 
+int deleteFilmeFromID(int filme_id);
+
+int deleteSalaFromID(int sala_id);
+
 int insertExibicao(int sala_id, int filme_id);
 
 int deleteExibicao(int sala_id, int filme_id);
@@ -22,7 +26,7 @@ int deleteExibicaoFromFilme(int filme_id);
 
 int deleteExibicaoFromSala(int sala_id);
 
-int deleteExibicaoOneIntBind(char *sql, int bind);
+int oneIntBindStatment(char *sql, int bind);
 
 int getFilmeIDByNome(char *nome);
 

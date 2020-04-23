@@ -101,17 +101,17 @@ int insertFilme(char *nome, char *genero, char *descricao) {
 
 int deleteFilmeFromID(int filme_id) {
     int rc = deleteExibicaoFromFilme(filme_id);
-    if (rc = SQLITE_DONE) {
+    if (rc == SQLITE_DONE) {
         char *sql = "DELETE FROM Filmes WHERE filme_id = ?;";
-        return deleteExibicaoOneIntBind(sql, filme_id);
+        return oneIntBindStatment(sql, filme_id);
     }
 }
 
 int deleteSalaFromID(int sala_id) {
     int rc = deleteExibicaoFromSala(sala_id);
-    if (rc = SQLITE_DONE) {
+    if (rc == SQLITE_DONE) {
         char *sql = "DELETE FROM Salas WHERE sala_id = ?;";
-        return deleteExibicaoOneIntBind(sql, sala_id);
+        return oneIntBindStatment(sql, sala_id);
     }
 }
 
@@ -154,12 +154,12 @@ int insertExibicao(int sala_id, int filme_id) {
 
 int deleteExibicaoFromFilme(int filme_id) {
     char *sql = "DELETE FROM Exibicao WHERE filme_id = ?;";
-    return deleteExibicaoOneIntBind(sql, filme_id);
+    return oneIntBindStatment(sql, filme_id);
 }
 
 int deleteExibicaoFromSala(int sala_id) {
     char *sql = "DELETE FROM Exibicao WHERE sala_id = ?;";
-    return deleteExibicaoOneIntBind(sql, sala_id);
+    return oneIntBindStatment(sql, sala_id);
     
 }
 
@@ -185,7 +185,7 @@ int oneIntBindStatment(char *sql, int bind) {
     }
 
 
-    fprintf(stderr, "Delete ID: %lld\n", bind);
+    fprintf(stderr, "Delete ID: %d\n", bind);
 
     sqlite3_finalize(stmt);
 
