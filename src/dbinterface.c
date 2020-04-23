@@ -99,6 +99,22 @@ int insertFilme(char *nome, char *genero, char *descricao) {
     return (int) id;
 }
 
+int deleteFilmeFromID(int filme_id) {
+    int rc = deleteExibicaoFromFilme(filme_id);
+    if (rc = SQLITE_DONE) {
+        char *sql = "DELETE FROM Filmes WHERE filme_id = ?;";
+        return deleteExibicaoOneIntBind(sql, filme_id);
+    }
+}
+
+int deleteSalaFromID(int sala_id) {
+    int rc = deleteExibicaoFromSala(sala_id);
+    if (rc = SQLITE_DONE) {
+        char *sql = "DELETE FROM Salas WHERE sala_id = ?;";
+        return deleteExibicaoOneIntBind(sql, sala_id);
+    }
+}
+
 int insertExibicao(int sala_id, int filme_id) {
     char *sql = "INSERT INTO Exibicao (sala_id, filme_id) VALUES( ? , ? );";
     sqlite3_stmt *stmt;
@@ -134,6 +150,81 @@ int insertExibicao(int sala_id, int filme_id) {
     sqlite3_finalize(stmt);
 
     return (int) id;
+}
+
+int deleteExibicaoFromFilme(int filme_id) {
+    char *sql = "DELETE FROM Exibicao WHERE filme_id = ?;";
+    return deleteExibicaoOneIntBind(sql, filme_id);
+}
+
+int deleteExibicaoFromSala(int sala_id) {
+    char *sql = "DELETE FROM Exibicao WHERE sala_id = ?;";
+    return deleteExibicaoOneIntBind(sql, sala_id);
+    
+}
+
+int oneIntBindStatment(char *sql, int bind) {
+    sqlite3_stmt *stmt;
+
+    int rc = sqlite3_prepare_v2 (db, sql, -1, &stmt, NULL);
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepere statment: %s\n", sqlite3_errmsg(db));
+        return -1;
+    }
+
+    rc = sqlite3_bind_int(stmt, 1, bind);
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "Cannot bind data: %s\n", sqlite3_errmsg(db));
+        return -1;
+    }
+
+    rc = sqlite3_step(stmt);
+    if (rc != SQLITE_DONE ) {      
+        fprintf(stderr, "delete statement didn't return DONE (%i): %s\n", rc, sqlite3_errmsg(db));              
+        return -1;
+    }
+
+
+    fprintf(stderr, "Delete ID: %lld\n", bind);
+
+    sqlite3_finalize(stmt);
+
+    return (int) rc;
+}
+
+int deleteExibicao(int sala_id, int filme_id) {
+    char *sql = "DELETE FROM Exibicao WHERE sala_id = ? and filme_id = ?;";
+    sqlite3_stmt *stmt;
+
+    int rc = sqlite3_prepare_v2 (db, sql, -1, &stmt, NULL);
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepere statment: %s\n", sqlite3_errmsg(db));
+        return -1;
+    }
+
+    rc = sqlite3_bind_int(stmt, 1, sala_id);
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "Cannot bind data: %s\n", sqlite3_errmsg(db));
+        return -1;
+    }
+
+    rc = sqlite3_bind_int(stmt, 2, filme_id);
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "Cannot bind data: %s\n", sqlite3_errmsg(db));
+        return -1;
+    }
+
+    rc = sqlite3_step(stmt);
+    if (rc != SQLITE_DONE ) {      
+        fprintf(stderr, "delete statement didn't return DONE (%i): %s\n", rc, sqlite3_errmsg(db));              
+        return -1;
+    }
+
+    fprintf(stderr, "Delete Exibição");
+
+    sqlite3_finalize(stmt);
+
+    return (int) rc;
 }
 
 int getFilmeIDByNome(char *nome) {

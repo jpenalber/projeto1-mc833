@@ -16,6 +16,14 @@ int insertFilme(char *nome, char *genero, char *descricao);
 
 int insertExibicao(int sala_id, int filme_id);
 
+int deleteExibicao(int sala_id, int filme_id);
+
+int deleteExibicaoFromFilme(int filme_id);
+
+int deleteExibicaoFromSala(int sala_id);
+
+int deleteExibicaoOneIntBind(char *sql, int bind);
+
 int getFilmeIDByNome(char *nome);
 
 int getFilmeByID(int filme_id, s_filme *filme);
