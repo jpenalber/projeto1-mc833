@@ -40,4 +40,4 @@ int getAllInfo(s_filme ***filmes);
 
 int getAllTituloSala(s_filme ***filmes);
 
-char *cpytext(const unsigned char *text);
+char *cpytext(char *text);

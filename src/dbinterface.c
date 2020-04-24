@@ -290,7 +290,10 @@ char *getNameByID(int filme_id) {
     return nome;
 }
 
-char *cpytext(const unsigned char *text) {
+char *cpytext(char *text) {
+    if (text == NULL) {
+        return "";
+    }
     char *new_text = calloc(strlen((const char *)text)+1, sizeof(char));
     strcpy(new_text, (const char *)text);
     return new_text;
@@ -467,6 +470,7 @@ int getAllTituloSala(s_filme ***filmes) {
     linked_list *list = calloc(1, sizeof(linked_list));
     int count = 0;
     while (sqlite3_step(stmt) == SQLITE_ROW) {
+        printf("A\n");
         s_filme *filme = calloc(1, sizeof(s_filme));
         filme->id = (int) sqlite3_column_int64(stmt, 0);
         filme->nome = cpytext(sqlite3_column_text(stmt, 1));
@@ -478,6 +482,7 @@ int getAllTituloSala(s_filme ***filmes) {
         count++;
     }
 
+    printf("B\n");
     *(filmes) = calloc(count, sizeof(s_filme*));
     for (int i = count; count >= 1 && list->next != NULL; i--) {
         (*(filmes))[i-1] = (s_filme *) linked_list_pop(list);
