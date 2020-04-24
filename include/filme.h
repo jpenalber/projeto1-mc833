@@ -4,6 +4,7 @@ typedef struct Filme {
     char *genero;
     char *descricao;
     int sala;
+    char *sala_tipo;
     int *salas;
     int num_salas;
 } s_filme;
