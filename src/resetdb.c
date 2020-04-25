@@ -28,9 +28,8 @@ int main( void ) {
                 "DROP TABLE IF EXISTS Exibicao;"
                 "CREATE TABLE Exibicao(Id INTEGER PRIMARY KEY AUTOINCREMENT, sala_id INT, filme_id INT, FOREIGN KEY (sala_id) REFERENCES Salas(sala_id), FOREIGN KEY (filme_id) REFERENCES Filmes(filme_id));" 
                 "INSERT INTO Exibicao (sala_id, filme_id) VALUES(1, 2);"
-                "INSERT INTO Exibicao (sala_id, filme_id)  VALUES(1, 3);"
-                "INSERT INTO Exibicao (sala_id, filme_id)  VALUES(2, 2);"
-                "INSERT INTO Exibicao (sala_id, filme_id)  VALUES(2, 3);";
+                "INSERT INTO Exibicao (sala_id, filme_id)  VALUES(3, 3);"
+                "INSERT INTO Exibicao (sala_id, filme_id)  VALUES(2, 1);";
 
     rc = sqlite3_exec(db, sql, 0, 0, &err_msg);
     

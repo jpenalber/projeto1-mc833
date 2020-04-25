@@ -472,7 +472,6 @@ int getAllTituloSala(s_filme ***filmes) {
     linked_list *list = calloc(1, sizeof(linked_list));
     int count = 0;
     while (sqlite3_step(stmt) == SQLITE_ROW) {
-        printf("A\n");
         s_filme *filme = calloc(1, sizeof(s_filme));
         filme->id = (int) sqlite3_column_int64(stmt, 0);
         filme->nome = cpytext(sqlite3_column_text(stmt, 1));
@@ -484,7 +483,6 @@ int getAllTituloSala(s_filme ***filmes) {
         count++;
     }
 
-    printf("B\n");
     *(filmes) = calloc(count, sizeof(s_filme*));
     for (int i = count; count >= 1 && list->next != NULL; i--) {
         (*(filmes))[i-1] = (s_filme *) linked_list_pop(list);
