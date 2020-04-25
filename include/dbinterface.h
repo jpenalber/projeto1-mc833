@@ -12,7 +12,7 @@ int insertSala(char *tipo);
 int insertFilmeStruct(s_filme filme);
 
 // Inset a Film and return ID
-int insertFilme(char *nome, char *genero, char *descricao);
+int insertFilme(char *nome, char *genero, char *descricao, int sala);
 
 int removeFilme(int filme_id);
 

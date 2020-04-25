@@ -56,7 +56,7 @@ int insertFilmeStruct(s_filme filme) {
     return insertFilme(filme.nome, filme.genero, filme.descricao);
 }
 
-int insertFilme(char *nome, char *genero, char *descricao) {
+int insertFilme(char *nome, char *genero, char *descricao, int sala) {
     char *sql = "INSERT INTO Filmes (Nome, Genero, Descricao) VALUES( ?, ?, ?);";
     sqlite3_stmt *stmt;
 
@@ -95,6 +95,8 @@ int insertFilme(char *nome, char *genero, char *descricao) {
     fprintf(stderr, "Filme ID: %lld\n", id);
 
     sqlite3_finalize(stmt);
+
+    insertExibicao(sala, id);
 
     return (int) id;
 }
