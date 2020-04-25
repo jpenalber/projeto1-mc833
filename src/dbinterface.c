@@ -11,10 +11,9 @@ int open_db(char *path) {
     int rc = sqlite3_open(path, &db);
 
     if (rc != SQLITE_OK) {
-        
         fprintf(stderr, "Cannot open database: %s\n", sqlite3_errmsg(db));
         sqlite3_close(db);
-        
+
         return -1;
     }
 
@@ -38,8 +37,8 @@ int insertSala(char *tipo) {
     }
 
     rc = sqlite3_step(stmt);
-    if (rc != SQLITE_DONE ) {      
-        fprintf(stderr, "insert statement didn't return DONE (%i): %s\n", rc, sqlite3_errmsg(db));              
+    if (rc != SQLITE_DONE ) {
+        fprintf(stderr, "insert statement didn't return DONE (%i): %s\n", rc, sqlite3_errmsg(db));
         return -1;
     }
 
@@ -85,8 +84,8 @@ int insertFilme(char *nome, char *genero, char *descricao, int sala) {
     }
 
     rc = sqlite3_step(stmt);
-    if (rc != SQLITE_DONE ) {      
-        fprintf(stderr, "insert statement didn't return DONE (%i): %s\n", rc, sqlite3_errmsg(db));              
+    if (rc != SQLITE_DONE ) {
+        fprintf(stderr, "insert statement didn't return DONE (%i): %s\n", rc, sqlite3_errmsg(db));
         return -1;
     }
 
@@ -142,8 +141,8 @@ int insertExibicao(int sala_id, int filme_id) {
     }
 
     rc = sqlite3_step(stmt);
-    if (rc != SQLITE_DONE ) {      
-        fprintf(stderr, "insert statement didn't return DONE (%i): %s\n", rc, sqlite3_errmsg(db));              
+    if (rc != SQLITE_DONE ) {
+        fprintf(stderr, "insert statement didn't return DONE (%i): %s\n", rc, sqlite3_errmsg(db));
         return -1;
     }
 
@@ -164,7 +163,6 @@ int deleteExibicaoFromFilme(int filme_id) {
 int deleteExibicaoFromSala(int sala_id) {
     char *sql = "DELETE FROM Exibicao WHERE sala_id = ?;";
     return oneIntBindStatment(sql, sala_id);
-    
 }
 
 int oneIntBindStatment(char *sql, int bind) {
@@ -183,8 +181,8 @@ int oneIntBindStatment(char *sql, int bind) {
     }
 
     rc = sqlite3_step(stmt);
-    if (rc != SQLITE_DONE ) {      
-        fprintf(stderr, "delete statement didn't return DONE (%i): %s\n", rc, sqlite3_errmsg(db));              
+    if (rc != SQLITE_DONE ) {
+        fprintf(stderr, "delete statement didn't return DONE (%i): %s\n", rc, sqlite3_errmsg(db));
         return -1;
     }
 
@@ -219,8 +217,8 @@ int deleteExibicao(int sala_id, int filme_id) {
     }
 
     rc = sqlite3_step(stmt);
-    if (rc != SQLITE_DONE ) {      
-        fprintf(stderr, "delete statement didn't return DONE (%i): %s\n", rc, sqlite3_errmsg(db));              
+    if (rc != SQLITE_DONE ) {
+        fprintf(stderr, "delete statement didn't return DONE (%i): %s\n", rc, sqlite3_errmsg(db));
         return -1;
     }
 
@@ -366,8 +364,6 @@ int getInfoByID(int filme_id, s_filme *filme) {
         free(list);
         sqlite3_finalize(stmt);
     }
-
-    
 
     return id;
 }
