@@ -20,7 +20,7 @@ void printFilms(struct staticFilme films[50], int len) {
         for (int j = 0; j < films[i].num_salas; j++) {
             printf("%d ", films[i].salas[j]);
         }
-        puts("");
+        puts("\n");
     }
 }
 
@@ -42,6 +42,15 @@ int main(int argc, char *argv[]) {
         puts("Connect Failed");
         return 1;
     }
+    printf("Operacoes:\n"
+         "\tinserir\t\t insere filme\n"
+         "\tremover\t\t remove filme por ID\n"
+         "\tlistar_titulo\t lista todos os titulos de filme\n"
+         "\tlistar_genero\t lista todos os filmes de um genero\n"
+         "\tnome\t\t diz nome do filme pelo ID\n"
+         "\tinfo\t\t diz todas informacoes do filme pelo ID\n"
+         "\ttudo\t\t diz todas informacoes de todos os filmes\n\n"
+         "comando: ");
 
     char type[40];
     scanf(" %s", type);
@@ -51,10 +60,15 @@ int main(int argc, char *argv[]) {
         packet.type = PT_INSERT_FILME;
 
         struct staticFilme film;
+        printf("Nome: ");
         scanf(" %[^\n]s", film.nome);
+        printf("Genero: ");
         scanf(" %[^\n]s", film.genero);
+        printf("Descricao: ");
         scanf(" %[^\n]s", film.descricao);
+        printf("Sala: ");
         scanf(" %d", &film.sala);
+        printf("Tipo da sala: ");
         scanf(" %[^\n]s", film.sala_tipo);
 
         memcpy(packet.data, &film, sizeof(film));
@@ -66,6 +80,8 @@ int main(int argc, char *argv[]) {
     }
     else if (!strcmp(type, "remover")) {
         packet.type = PT_REMOVE_FILME;
+
+        printf("ID: ");
         scanf(" %d", (int *) &packet.data);
 
         write(sockfd, &packet, sizeof(packet));
@@ -83,6 +99,8 @@ int main(int argc, char *argv[]) {
     }
     else if (!strcmp(type, "listar_genero")) {
         packet.type = PT_LIST_GENERO;
+
+        printf("Genero: ");
         scanf(" %[^\n]s", packet.data);
 
         write(sockfd, &packet, sizeof(packet));
@@ -95,6 +113,8 @@ int main(int argc, char *argv[]) {
     }
     else if (!strcmp(type, "nome")) {
         packet.type = PT_FILM_NAME_FROM_ID;
+
+        printf("ID: ");
         scanf(" %d", (int *) &packet.data);
 
         write(sockfd, &packet, sizeof(packet));
@@ -104,6 +124,8 @@ int main(int argc, char *argv[]) {
     }
     else if (!strcmp(type, "info")) {
         packet.type = PT_FILM_INFO_FROM_ID;
+
+        printf("ID: ");
         scanf(" %d", (int *) &packet.data);
 
         write(sockfd, &packet, sizeof(packet));

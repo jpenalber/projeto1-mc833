@@ -7,18 +7,6 @@
 #include <common.h>
 #include <dbinterface.h>
 
-int findNextString(int start, char *buffer) {
-    int i = start;
-    while (buffer[i]) i++;
-    return i+1;
-}
-
-void addStringToPacket(char *data, char *string) {
-    int start = 0;
-    while (data[start]) start = findNextString(start, data);
-    strcpy(&data[start], string);
-}
-
 int toStaticArray(struct staticFilme films[50], s_filme **list, int n) {
     int i;
 
@@ -123,14 +111,11 @@ int main(int argc, char *argv[]) {
                     {
                         packet.type = PT_LIST_GENERO_RESULT;
 
-                        printf("a\n");
                         s_filme **list;
                         int count = getAllByGenero((char *) packet.data, &list);
-                        printf("b\n");
 
                         struct staticFilme films[50];
                         count = toStaticArray(films, list, count);
-                        printf("c\n");
 
                         memcpy(packet.data, films, sizeof(films));
                         packet.len = count;
@@ -179,9 +164,7 @@ int main(int argc, char *argv[]) {
                         int count = getAllInfo(&list);
 
                         struct staticFilme films[50];
-                        printf("a %d\n", count);
                         count = toStaticArray(films, list, count);
-                        puts("b");
 
                         memcpy(packet.data, films, sizeof(films));
                         packet.len = count;
