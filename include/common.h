@@ -19,7 +19,8 @@ enum packet_type {
 
 struct packet {
     enum packet_type type;
-    char data[1024];
+    int len;
+    char data[30000];
 };
 
 typedef struct LinkedList {

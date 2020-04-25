@@ -292,7 +292,7 @@ char *getNameByID(int filme_id) {
     return nome;
 }
 
-char *cpytext(char *text) {
+char *cpytext(const unsigned char *text) {
     if (text == NULL) {
         return "";
     }

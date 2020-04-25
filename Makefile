@@ -1,5 +1,5 @@
 INCDIR = ./include/
-CFLAGS = -Wall -O2 -std=c11
+CFLAGS = -Wall -O2 -std=c11 -g
 
 all: bin_dir client server resetdb
 
