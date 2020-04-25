@@ -19,6 +19,27 @@ void addStringToPacket(char *data, char *string) {
     strcpy(&data[start], string);
 }
 
+int toStaticArray(struct staticFilme films[50], s_filme **list, int n) {
+    int i;
+
+    for (i = 0; i < n && i < 50; i++) {
+        films[i].id = list[i]->id;
+        if (list[i]->nome) strcpy(films[i].nome, list[i]->nome);
+        else memset(films[i].nome, 0, sizeof(films[0].nome));
+        if (list[i]->genero) strcpy(films[i].genero, list[i]->genero);
+        else memset(films[i].genero, 0, sizeof(films[0].genero));
+        if (list[i]->descricao) strcpy(films[i].descricao, list[i]->descricao);
+        else memset(films[i].descricao, 0, sizeof(films[0].descricao));
+        films[i].sala = list[i]->sala;
+        if (list[i]->sala_tipo) strcpy(films[i].sala_tipo, list[i]->sala_tipo);
+        else memset(films[i].sala_tipo, 0, sizeof(films[0].sala_tipo));
+        memcpy(films[i].salas, list[i]->salas, list[i]->num_salas*sizeof(int));
+        films[i].num_salas = list[i]->num_salas;
+    }
+
+    return i;
+}
+
 int main(int argc, char *argv[]) {
     int listenfd = 0;
 
@@ -53,15 +74,20 @@ int main(int argc, char *argv[]) {
         else {
             // Child
             struct packet packet = {0};
-            int read_n = read(connfd, &packet, sizeof(packet));
-            int data_size = read_n - sizeof(enum packet_type);
+            read(connfd, &packet, sizeof(packet));
 
             switch (packet.type) {
                 case PT_INSERT_FILME:
                     {
-                        int gen = findNextString(0, packet.data);
-                        int desc = findNextString(gen, packet.data);
-                        int id = insertFilme(packet.data, &packet.data[gen], &packet.data[desc]);
+                        s_filme film;
+                        struct staticFilme *pfilm = (struct staticFilme *) &packet.data;
+                        film.nome = &pfilm->nome[0];
+                        film.genero = &pfilm->genero[0];
+                        film.descricao = &pfilm->descricao[0];
+                        film.sala = pfilm->sala;
+                        film.sala_tipo = &pfilm->sala_tipo[0];
+
+                        int id = insertFilmeStruct(film);
 
                         packet.type = PT_INSERT_FILME_RESULT;
                         memcpy(packet.data, &id, sizeof(id));
@@ -74,25 +100,40 @@ int main(int argc, char *argv[]) {
                         int id;
                         memcpy(&id, packet.data, sizeof(id));
 
-                        //removeFilme(id);
+                        removeFilme(id);
                     }
                     break;
                 case PT_LIST_TITULO_SALA:
                     {
                         packet.type = PT_LIST_TITULO_SALA_RESULT;
 
-                        //getAllTituloSala((char *) packet.data);
+                        s_filme **list;
+                        int count = getAllTituloSala(&list);
+
+                        struct staticFilme films[50];
+                        count = toStaticArray(films, list, count);
+
+                        memcpy(packet.data, films, sizeof(films));
+                        packet.len = count;
 
                         write(connfd, &packet, sizeof(packet));
                     }
                     break;
                 case PT_LIST_GENERO:
                     {
-                        char list[1023] = {0};
                         packet.type = PT_LIST_GENERO_RESULT;
 
-                        //getAllByGenero((char *) packet.data, list);
-                        memcpy(packet.data, list, sizeof(list));
+                        printf("a\n");
+                        s_filme **list;
+                        int count = getAllByGenero((char *) packet.data, &list);
+                        printf("b\n");
+
+                        struct staticFilme films[50];
+                        count = toStaticArray(films, list, count);
+                        printf("c\n");
+
+                        memcpy(packet.data, films, sizeof(films));
+                        packet.len = count;
 
                         write(connfd, &packet, sizeof(packet));
                     }
@@ -104,7 +145,8 @@ int main(int argc, char *argv[]) {
 
                         packet.type = PT_FILM_NAME_FROM_ID_RESULT;
 
-                        //getNameByID(id, (char *) packet.data);
+                        char *name = getNameByID(id);
+                        strcpy(packet.data, name);
 
                         write(connfd, &packet, sizeof(packet));
                     }
@@ -116,11 +158,15 @@ int main(int argc, char *argv[]) {
 
                         packet.type = PT_FILM_INFO_FROM_ID_RESULT;
 
-                        s_filme film = {0};
-                        //getInfoByID(id, &film);
-                        addStringToPacket(packet.data, film.nome);
-                        addStringToPacket(packet.data, film.genero);
-                        addStringToPacket(packet.data, film.descricao);
+                        s_filme *film = malloc(sizeof(s_filme));
+                        getInfoByID(id, film);
+
+                        struct staticFilme films[50];
+                        toStaticArray(films, &film, 1);
+                        free(film);
+
+                        memcpy(packet.data, films, sizeof(struct staticFilme));
+                        packet.len = 1;
 
                         write(connfd, &packet, sizeof(packet));
                     }
@@ -129,14 +175,16 @@ int main(int argc, char *argv[]) {
                     {
                         packet.type = PT_LIST_ALL_RESULT;
 
-                        s_filme films[20] = {0};
-                        int n = 0;
-                        //int n = getAllInfo(films);
-                        for (int i = 0; i < n; i++) {
-                            addStringToPacket(packet.data, films[i].nome);
-                            addStringToPacket(packet.data, films[i].genero);
-                            addStringToPacket(packet.data, films[i].descricao);
-                        }
+                        s_filme **list;
+                        int count = getAllInfo(&list);
+
+                        struct staticFilme films[50];
+                        printf("a %d\n", count);
+                        count = toStaticArray(films, list, count);
+                        puts("b");
+
+                        memcpy(packet.data, films, sizeof(films));
+                        packet.len = count;
 
                         write(connfd, &packet, sizeof(packet));
                     }
