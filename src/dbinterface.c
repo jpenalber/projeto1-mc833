@@ -53,7 +53,7 @@ int insertSala(char *tipo) {
 }
 
 int insertFilmeStruct(s_filme filme) {
-    return insertFilme(filme.nome, filme.genero, filme.descricao);
+    return insertFilme(filme.nome, filme.genero, filme.descricao, filme.sala);
 }
 
 int insertFilme(char *nome, char *genero, char *descricao, int sala) {
