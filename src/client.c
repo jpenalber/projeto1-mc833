@@ -74,7 +74,19 @@ int main(int argc, char *argv[]) {
         memcpy(packet.data, &film, sizeof(film));
 
         write(sockfd, &packet, sizeof(packet));
-        read(sockfd, &packet, sizeof(packet));
+
+        int count;
+        char buffer[sizeof(packet)];
+        char *bufftmp = &buffer[0];
+        size_t bufflen = sizeof(packet);
+
+        do {
+            count = read(sockfd, bufftmp, bufflen-1);
+            bufftmp += count;
+            bufflen -= count;
+        } while (count > 0 && bufflen > 0);
+
+        memcpy(&packet, buffer, sizeof(buffer));
 
         printf("ID %d\n", ((int *)packet.data)[0]);
     }
@@ -90,12 +102,23 @@ int main(int argc, char *argv[]) {
         packet.type = PT_LIST_TITULO_SALA;
 
         write(sockfd, &packet, sizeof(packet));
-        read(sockfd, &packet, sizeof(packet));
+
+        int count;
+        char buffer[sizeof(packet)];
+        char *bufftmp = &buffer[0];
+        size_t bufflen = sizeof(packet);
+
+        do {
+            count = read(sockfd, bufftmp, bufflen-1);
+            bufftmp += count;
+            bufflen -= count;
+        } while (count > 0 && bufflen > 0);
+
+        memcpy(&packet, buffer, sizeof(buffer));
 
         struct staticFilme films[MAX_FILMS];
         memcpy(films, packet.data, packet.len*sizeof(struct staticFilme));
 
-        printFilms(films, packet.len);
         for (int i = 0; i < packet.len; i++) {
             printf("nome: %s\n", films[i].nome);
             printf("sala: %d\n\n", films[i].sala);
@@ -108,7 +131,19 @@ int main(int argc, char *argv[]) {
         scanf(" %[^\n]s", packet.data);
 
         write(sockfd, &packet, sizeof(packet));
-        read(sockfd, &packet, sizeof(packet));
+
+        int count;
+        char buffer[sizeof(packet)];
+        char *bufftmp = &buffer[0];
+        size_t bufflen = sizeof(packet);
+
+        do {
+            count = read(sockfd, bufftmp, bufflen-1);
+            bufftmp += count;
+            bufflen -= count;
+        } while (count > 0 && bufflen > 0);
+
+        memcpy(&packet, buffer, sizeof(buffer));
 
         struct staticFilme films[MAX_FILMS];
         memcpy(films, packet.data, packet.len*sizeof(struct staticFilme));
@@ -122,7 +157,19 @@ int main(int argc, char *argv[]) {
         scanf(" %d", (int *) &packet.data);
 
         write(sockfd, &packet, sizeof(packet));
-        read(sockfd, &packet, sizeof(packet));
+
+        int count;
+        char buffer[sizeof(packet)];
+        char *bufftmp = &buffer[0];
+        size_t bufflen = sizeof(packet);
+
+        do {
+            count = read(sockfd, bufftmp, bufflen-1);
+            bufftmp += count;
+            bufflen -= count;
+        } while (count > 0 && bufflen > 0);
+
+        memcpy(&packet, buffer, sizeof(buffer));
 
         printf("%s\n", packet.data);
     }
@@ -133,7 +180,19 @@ int main(int argc, char *argv[]) {
         scanf(" %d", (int *) &packet.data);
 
         write(sockfd, &packet, sizeof(packet));
-        read(sockfd, &packet, sizeof(packet));
+
+        int count;
+        char buffer[sizeof(packet)];
+        char *bufftmp = &buffer[0];
+        size_t bufflen = sizeof(packet);
+
+        do {
+            count = read(sockfd, bufftmp, bufflen-1);
+            bufftmp += count;
+            bufflen -= count;
+        } while (count > 0 && bufflen > 0);
+
+        memcpy(&packet, buffer, sizeof(buffer));
 
         struct staticFilme film;
         memcpy(&film, packet.data, sizeof(film));
