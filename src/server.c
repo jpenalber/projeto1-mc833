@@ -161,7 +161,7 @@ int main(int argc, char *argv[]) {
                         packet.type = PT_LIST_ALL_RESULT;
 
                         s_filme **list;
-                        int count = getAllInfo(&list);
+                        int count = getAllTituloSala(&list);
 
                         struct staticFilme films[50];
                         count = toStaticArray(films, list, count);
