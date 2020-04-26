@@ -148,7 +148,10 @@ int main(int argc, char *argv[]) {
         struct staticFilme films[MAX_FILMS];
         memcpy(films, packet.data, packet.len*sizeof(struct staticFilme));
 
-        printFilms(films, packet.len);
+        for (int i = 0; i < packet.len; i++) {
+            printf("id: %d\n", films[i].id);
+            printf("nome: %s\n\n", films[i].nome);
+        }
     }
     else if (!strcmp(type, "nome")) {
         packet.type = PT_FILM_NAME_FROM_ID;
