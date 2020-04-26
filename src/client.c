@@ -119,7 +119,6 @@ int main(int argc, char *argv[]) {
         struct staticFilme films[MAX_FILMS];
         memcpy(films, packet.data, packet.len*sizeof(struct staticFilme));
 
-        printFilms(films, packet.len);
         for (int i = 0; i < packet.len; i++) {
             printf("nome: %s\n", films[i].nome);
             printf("sala: %d\n\n", films[i].sala);
