@@ -144,7 +144,19 @@ int main(int argc, char *argv[]) {
         packet.type = PT_LIST_ALL;
 
         write(sockfd, &packet, sizeof(packet));
-        read(sockfd, &packet, sizeof(packet));
+
+        int count;
+        char buffer[sizeof(packet)];
+        char *bufftmp = &buffer[0];
+        size_t bufflen = sizeof(packet);
+
+        do {
+            count = read(sockfd, bufftmp, bufflen-1);
+            bufftmp += count;
+            bufflen -= count;
+        } while (count > 0 && bufflen > 0);
+
+        memcpy(&packet, buffer, sizeof(buffer));
 
         struct staticFilme films[MAX_FILMS];
         memcpy(films, packet.data, packet.len*sizeof(struct staticFilme));
