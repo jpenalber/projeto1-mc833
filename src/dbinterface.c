@@ -300,7 +300,7 @@ char *cpytext(const unsigned char *text) {
 }
 
 int getInfoByID(int filme_id, s_filme *filme) {
-    char *sql = "SELECT * FROM Filmes WHERE filme_id = ? LIMIT 1;";
+    char *sql = "select F.filme_id, F.nome, F.Genero, F.Descricao, ES.sala_id, ES.tipo from Filmes as F left join (select E.filme_id, S.sala_id, S.tipo from Exibicao as E inner join Salas as S on E.sala_id = S.sala_id) as ES on F.filme_id = ES.filme_id WHERE F.filme_id = ? LIMIT 1;";
     sqlite3_stmt *stmt;
 
     int rc = sqlite3_prepare_v2 (db, sql, -1, &stmt, NULL);
@@ -322,7 +322,8 @@ int getInfoByID(int filme_id, s_filme *filme) {
         filme->nome = cpytext(sqlite3_column_text(stmt, 1));
         filme->genero = cpytext(sqlite3_column_text(stmt, 2));
         filme->descricao = cpytext(sqlite3_column_text(stmt, 3));
-        id = filme->id;
+        filme->sala = (int) sqlite3_column_int64(stmt, 4);
+        filme->sala_tipo = cpytext(sqlite3_column_text(stmt, 5));
         fprintf(stderr, "Filme ID: %d\n", filme->id);
     } else {
         fprintf(stderr, "Filme not found!\n");
@@ -330,40 +331,6 @@ int getInfoByID(int filme_id, s_filme *filme) {
     }
 
     sqlite3_finalize(stmt);
-
-    if (id >= 0) {
-        char *sql = "SELECT sala_id FROM Exibicao WHERE filme_id = ?;";
-
-        int rc = sqlite3_prepare_v2 (db, sql, -1, &stmt, NULL);
-        if (rc != SQLITE_OK) {
-            fprintf(stderr, "Cannot prepere statment: %s\n", sqlite3_errmsg(db));
-            return -1;
-        }
-
-        rc = sqlite3_bind_int(stmt, 1, filme_id);
-        if (rc != SQLITE_OK) {
-            fprintf(stderr, "Cannot bind data: %s\n", sqlite3_errmsg(db));
-            return -1;
-        }
-
-        linked_list *list = calloc(1, sizeof(linked_list));
-        int count = 0;
-        while (sqlite3_step(stmt) == SQLITE_ROW) {
-            int *sala = calloc(1, sizeof(linked_list));
-            *sala = (int) sqlite3_column_int64(stmt, 0);
-            linked_list_push(list, sala);
-            count++;
-        }
-
-        filme->num_salas = count;
-        filme->salas = calloc(count, sizeof(int));
-        for (int i = count; count >= 1 && list->next != NULL; i--) {
-            int *p = (int *) linked_list_pop(list);
-            filme->salas[i-1] = *p;
-        }
-        free(list);
-        sqlite3_finalize(stmt);
-    }
 
     return id;
 }

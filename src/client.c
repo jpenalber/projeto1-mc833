@@ -16,10 +16,10 @@ void printFilms(struct staticFilme films[50], int len) {
         printf("descricao: %s\n", films[i].descricao);
         printf("sala: %d\n", films[i].sala);
         printf("sala_tipo: %s\n", films[i].sala_tipo);
-        printf("salas: ");
-        for (int j = 0; j < films[i].num_salas; j++) {
-            printf("%d ", films[i].salas[j]);
-        }
+        // printf("salas: ");
+        // for (int j = 0; j < films[i].num_salas; j++) {
+        //     printf("%d ", films[i].salas[j]);
+        // }
         puts("\n");
     }
 }
