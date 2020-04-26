@@ -7,10 +7,10 @@
 #include <common.h>
 #include <dbinterface.h>
 
-int toStaticArray(struct staticFilme films[50], s_filme **list, int n) {
+int toStaticArray(struct staticFilme films[MAX_FILMS], s_filme **list, int n) {
     int i;
 
-    for (i = 0; i < n && i < 50; i++) {
+    for (i = 0; i < n && i < MAX_FILMS; i++) {
         films[i].id = list[i]->id;
         if (list[i]->nome) strcpy(films[i].nome, list[i]->nome);
         else memset(films[i].nome, 0, sizeof(films[0].nome));
@@ -98,7 +98,7 @@ int main(int argc, char *argv[]) {
                         s_filme **list;
                         int count = getAllTituloSala(&list);
 
-                        struct staticFilme films[50];
+                        struct staticFilme films[MAX_FILMS];
                         count = toStaticArray(films, list, count);
 
                         memcpy(packet.data, films, sizeof(films));
@@ -114,7 +114,7 @@ int main(int argc, char *argv[]) {
                         s_filme **list;
                         int count = getAllByGenero((char *) packet.data, &list);
 
-                        struct staticFilme films[50];
+                        struct staticFilme films[MAX_FILMS];
                         count = toStaticArray(films, list, count);
 
                         memcpy(packet.data, films, sizeof(films));
@@ -146,7 +146,7 @@ int main(int argc, char *argv[]) {
                         s_filme *film = malloc(sizeof(s_filme));
                         getInfoByID(id, film);
 
-                        struct staticFilme films[50];
+                        struct staticFilme films[MAX_FILMS];
                         toStaticArray(films, &film, 1);
                         free(film);
 
@@ -163,7 +163,7 @@ int main(int argc, char *argv[]) {
                         s_filme **list;
                         int count = getAllTituloSala(&list);
 
-                        struct staticFilme films[50];
+                        struct staticFilme films[MAX_FILMS];
                         count = toStaticArray(films, list, count);
 
                         memcpy(packet.data, films, sizeof(films));

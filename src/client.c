@@ -8,7 +8,7 @@
 
 #define SERVER_IP "localhost"
 
-void printFilms(struct staticFilme films[50], int len) {
+void printFilms(struct staticFilme films[MAX_FILMS], int len) {
     for (int i = 0; i < len; i++) {
         printf("id: %d\n", films[i].id);
         printf("nome: %s\n", films[i].nome);
@@ -92,7 +92,7 @@ int main(int argc, char *argv[]) {
         write(sockfd, &packet, sizeof(packet));
         read(sockfd, &packet, sizeof(packet));
 
-        struct staticFilme films[50];
+        struct staticFilme films[MAX_FILMS];
         memcpy(films, packet.data, packet.len*sizeof(struct staticFilme));
 
         printFilms(films, packet.len);
@@ -110,7 +110,7 @@ int main(int argc, char *argv[]) {
         write(sockfd, &packet, sizeof(packet));
         read(sockfd, &packet, sizeof(packet));
 
-        struct staticFilme films[50];
+        struct staticFilme films[MAX_FILMS];
         memcpy(films, packet.data, packet.len*sizeof(struct staticFilme));
 
         printFilms(films, packet.len);
@@ -146,7 +146,7 @@ int main(int argc, char *argv[]) {
         write(sockfd, &packet, sizeof(packet));
         read(sockfd, &packet, sizeof(packet));
 
-        struct staticFilme films[50];
+        struct staticFilme films[MAX_FILMS];
         memcpy(films, packet.data, packet.len*sizeof(struct staticFilme));
 
         printFilms(films, packet.len);

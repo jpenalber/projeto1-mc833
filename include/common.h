@@ -1,5 +1,7 @@
 #define SERVER_PORT 27015
 
+#define MAX_FILMS 10
+
 enum packet_type {
     PT_INSERT_FILME,
     PT_REMOVE_FILME,
@@ -20,7 +22,7 @@ enum packet_type {
 struct packet {
     enum packet_type type;
     int len;
-    char data[30000];
+    char data[6000];
 };
 
 typedef struct LinkedList {
