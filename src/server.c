@@ -3,9 +3,16 @@
 #include <string.h>
 #include <time.h>
 #include <arpa/inet.h>
+#include <sys/time.h>
 
 #include <common.h>
 #include <dbinterface.h>
+
+void printTime(struct timeval time) {
+    suseconds_t usecs_before = time.tv_usec;
+    gettimeofday(&time, NULL);
+    printf("%% %f\n", (time.tv_usec - usecs_before)/1000000.0f);
+}
 
 int toStaticArray(struct staticFilme films[MAX_FILMS], s_filme **list, int n) {
     int i;
@@ -29,6 +36,8 @@ int toStaticArray(struct staticFilme films[MAX_FILMS], s_filme **list, int n) {
 }
 
 int main(int argc, char *argv[]) {
+    struct timeval time;
+
     int listenfd = 0;
 
     if ((listenfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -64,6 +73,7 @@ int main(int argc, char *argv[]) {
             struct packet packet = {0};
             read(connfd, &packet, sizeof(packet));
 
+            gettimeofday(&time, NULL);
             switch (packet.type) {
                 case PT_INSERT_FILME:
                     {
@@ -80,6 +90,8 @@ int main(int argc, char *argv[]) {
                         packet.type = PT_INSERT_FILME_RESULT;
                         memcpy(packet.data, &id, sizeof(id));
 
+                        printTime(time);
+
                         write(connfd, &packet, sizeof(packet));
                     }
                     break;
@@ -89,6 +101,8 @@ int main(int argc, char *argv[]) {
                         memcpy(&id, packet.data, sizeof(id));
 
                         removeFilme(id);
+
+                        printTime(time);
                     }
                     break;
                 case PT_LIST_TITULO_SALA:
@@ -103,6 +117,8 @@ int main(int argc, char *argv[]) {
 
                         memcpy(packet.data, films, sizeof(films));
                         packet.len = count;
+
+                        printTime(time);
 
                         write(connfd, &packet, sizeof(packet));
                     }
@@ -120,6 +136,8 @@ int main(int argc, char *argv[]) {
                         memcpy(packet.data, films, sizeof(films));
                         packet.len = count;
 
+                        printTime(time);
+
                         write(connfd, &packet, sizeof(packet));
                     }
                     break;
@@ -132,6 +150,8 @@ int main(int argc, char *argv[]) {
 
                         char *name = getNameByID(id);
                         strcpy(packet.data, name);
+
+                        printTime(time);
 
                         write(connfd, &packet, sizeof(packet));
                     }
@@ -153,6 +173,8 @@ int main(int argc, char *argv[]) {
                         memcpy(packet.data, films, sizeof(struct staticFilme));
                         packet.len = 1;
 
+                        printTime(time);
+
                         write(connfd, &packet, sizeof(packet));
                     }
                     break;
@@ -168,6 +190,8 @@ int main(int argc, char *argv[]) {
 
                         memcpy(packet.data, films, sizeof(films));
                         packet.len = count;
+
+                        printTime(time);
 
                         write(connfd, &packet, sizeof(packet));
                     }

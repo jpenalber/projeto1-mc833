@@ -7,7 +7,7 @@
 #include <common.h>
 #include <filme.h>
 
-#define SERVER_IP "187.56.54.16"
+#define SERVER_IP "localhost"
 
 void printFilms(struct staticFilme films[MAX_FILMS], int len) {
     for (int i = 0; i < len; i++) {
