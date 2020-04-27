@@ -7,7 +7,8 @@
 #include <common.h>
 #include <filme.h>
 
-#define SERVER_IP "187.56.54.16"
+// #define SERVER_IP "187.56.54.16"
+#define SERVER_IP "localhost"
 
 void printFilms(struct staticFilme films[MAX_FILMS], int len) {
     for (int i = 0; i < len; i++) {
@@ -69,8 +70,8 @@ int main(int argc, char *argv[]) {
         scanf(" %[^\n]s", film.descricao);
         printf("Sala: ");
         scanf(" %d", &film.sala);
-        printf("Tipo da sala: ");
-        scanf(" %[^\n]s", film.sala_tipo);
+        // printf("Tipo da sala: ");
+        // scanf(" %[^\n]s", film.sala_tipo);
 
         memcpy(packet.data, &film, sizeof(film));
 
@@ -93,7 +94,7 @@ int main(int argc, char *argv[]) {
         struct timeval end;
         gettimeofday(&end, NULL);
 
-        printf("%% %f\n", (end.tv_usec-begin.tv_usec)/1000000.0f);
+        printf("\n%% %f\n", (end.tv_usec-begin.tv_usec)/1000000.0f);
 
         memcpy(&packet, buffer, sizeof(buffer));
 
@@ -129,7 +130,7 @@ int main(int argc, char *argv[]) {
         struct timeval end;
         gettimeofday(&end, NULL);
 
-        printf("%% %f\n", (end.tv_usec-begin.tv_usec)/1000000.0f);
+        printf("\n%% %f\n", (end.tv_usec-begin.tv_usec)/1000000.0f);
 
         memcpy(&packet, buffer, sizeof(buffer));
 
@@ -166,7 +167,7 @@ int main(int argc, char *argv[]) {
         struct timeval end;
         gettimeofday(&end, NULL);
 
-        printf("%% %f\n", (end.tv_usec-begin.tv_usec)/1000000.0f);
+        printf("\n%% %f\n", (end.tv_usec-begin.tv_usec)/1000000.0f);
 
         memcpy(&packet, buffer, sizeof(buffer));
 
@@ -203,7 +204,7 @@ int main(int argc, char *argv[]) {
         struct timeval end;
         gettimeofday(&end, NULL);
 
-        printf("%% %f\n", (end.tv_usec-begin.tv_usec)/1000000.0f);
+        printf("\n%% %f\n", (end.tv_usec-begin.tv_usec)/1000000.0f);
 
         memcpy(&packet, buffer, sizeof(buffer));
 
@@ -234,7 +235,7 @@ int main(int argc, char *argv[]) {
         struct timeval end;
         gettimeofday(&end, NULL);
 
-        printf("%% %f\n", (end.tv_usec-begin.tv_usec)/1000000.0f);
+        printf("\n%% %f\n", (end.tv_usec-begin.tv_usec)/1000000.0f);
 
         memcpy(&packet, buffer, sizeof(buffer));
 
@@ -265,7 +266,7 @@ int main(int argc, char *argv[]) {
         struct timeval end;
         gettimeofday(&end, NULL);
 
-        printf("%% %f\n", (end.tv_usec-begin.tv_usec)/1000000.0f);
+        printf("\n%% %f\n", (end.tv_usec-begin.tv_usec)/1000000.0f);
 
         memcpy(&packet, buffer, sizeof(buffer));
 
