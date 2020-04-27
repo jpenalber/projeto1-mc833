@@ -71,7 +71,19 @@ int main(int argc, char *argv[]) {
         else {
             // Child
             struct packet packet = {0};
-            read(connfd, &packet, sizeof(packet));
+
+            int count;
+            char buffer[sizeof(packet)];
+            char *bufftmp = &buffer[0];
+            size_t bufflen = sizeof(packet);
+
+            do {
+                count = read(connfd, bufftmp, bufflen-1);
+                bufftmp += count;
+                bufflen -= count;
+            } while (count > 0 && bufflen > 0);
+
+            memcpy(&packet, buffer, sizeof(buffer));
 
             gettimeofday(&time, NULL);
             switch (packet.type) {
