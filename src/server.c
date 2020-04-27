@@ -8,10 +8,10 @@
 #include <common.h>
 #include <dbinterface.h>
 
-void printTime(struct timeval time) {
+void printTime(const char *prefix, struct timeval time) {
     suseconds_t usecs_before = time.tv_usec;
     gettimeofday(&time, NULL);
-    printf("%% %f\n", (time.tv_usec - usecs_before)/1000000.0f);
+    printf("%%-%s-%f\n", prefix, (time.tv_usec - usecs_before)/1000000.0f);
 }
 
 int toStaticArray(struct staticFilme films[MAX_FILMS], s_filme **list, int n) {
@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
                         packet.type = PT_INSERT_FILME_RESULT;
                         memcpy(packet.data, &id, sizeof(id));
 
-                        printTime(time);
+                        printTime("inserir", time);
 
                         write(connfd, &packet, sizeof(packet));
                     }
@@ -102,7 +102,7 @@ int main(int argc, char *argv[]) {
 
                         removeFilme(id);
 
-                        printTime(time);
+                        printTime("remover", time);
                     }
                     break;
                 case PT_LIST_TITULO_SALA:
@@ -118,7 +118,7 @@ int main(int argc, char *argv[]) {
                         memcpy(packet.data, films, sizeof(films));
                         packet.len = count;
 
-                        printTime(time);
+                        printTime("listar_titulo", time);
 
                         write(connfd, &packet, sizeof(packet));
                     }
@@ -136,7 +136,7 @@ int main(int argc, char *argv[]) {
                         memcpy(packet.data, films, sizeof(films));
                         packet.len = count;
 
-                        printTime(time);
+                        printTime("listar_genero", time);
 
                         write(connfd, &packet, sizeof(packet));
                     }
@@ -151,7 +151,7 @@ int main(int argc, char *argv[]) {
                         char *name = getNameByID(id);
                         strcpy(packet.data, name);
 
-                        printTime(time);
+                        printTime("nome", time);
 
                         write(connfd, &packet, sizeof(packet));
                     }
@@ -173,7 +173,7 @@ int main(int argc, char *argv[]) {
                         memcpy(packet.data, films, sizeof(struct staticFilme));
                         packet.len = 1;
 
-                        printTime(time);
+                        printTime("info", time);
 
                         write(connfd, &packet, sizeof(packet));
                     }
@@ -191,7 +191,7 @@ int main(int argc, char *argv[]) {
                         memcpy(packet.data, films, sizeof(films));
                         packet.len = count;
 
-                        printTime(time);
+                        printTime("tudo", time);
 
                         write(connfd, &packet, sizeof(packet));
                     }

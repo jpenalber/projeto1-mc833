@@ -44,14 +44,14 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     printf("Operacoes:\n"
-         "\tinserir\t\t insere filme\n"
-         "\tremover\t\t remove filme por ID\n"
-         "\tlistar_titulo\t lista todos os titulos de filme\n"
-         "\tlistar_genero\t lista todos os filmes de um genero\n"
-         "\tnome\t\t diz nome do filme pelo ID\n"
-         "\tinfo\t\t diz todas informacoes do filme pelo ID\n"
-         "\ttudo\t\t diz todas informacoes de todos os filmes\n\n"
-         "comando: ");
+            "\tinserir\t\t insere filme\n"
+            "\tremover\t\t remove filme por ID\n"
+            "\tlistar_titulo\t lista todos os titulos de filme\n"
+            "\tlistar_genero\t lista todos os filmes de um genero\n"
+            "\tnome\t\t diz nome do filme pelo ID\n"
+            "\tinfo\t\t diz todas informacoes do filme pelo ID\n"
+            "\ttudo\t\t diz todas informacoes de todos os filmes\n\n"
+            "comando: ");
 
     char type[40];
     scanf(" %s", type);
@@ -265,7 +265,7 @@ int main(int argc, char *argv[]) {
         struct timeval end;
         gettimeofday(&end, NULL);
 
-       printf("%% %f\n", (end.tv_usec-begin.tv_usec)/1000000.0f);
+        printf("%% %f\n", (end.tv_usec-begin.tv_usec)/1000000.0f);
 
         memcpy(&packet, buffer, sizeof(buffer));
 
