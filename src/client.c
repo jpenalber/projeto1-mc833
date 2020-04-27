@@ -3,12 +3,13 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/time.h>
+#include <errno.h>
 
 #include <common.h>
 #include <filme.h>
 
-// #define SERVER_IP "187.56.54.16"
-#define SERVER_IP "localhost"
+#define SERVER_IP "187.56.54.16"
+//#define SERVER_IP "localhost"
 
 void printFilms(struct staticFilme films[MAX_FILMS], int len) {
     for (int i = 0; i < len; i++) {
@@ -41,7 +42,7 @@ int main(int argc, char *argv[]) {
 
     puts("Connecting...");
     if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
-        puts("Connect Failed");
+        printf("Connect Failed %d\n", errno);
         return 1;
     }
     printf("Operacoes:\n"

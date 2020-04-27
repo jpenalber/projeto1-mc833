@@ -1,8 +1,10 @@
-#define SERVER_PORT 27015
+#define SERVER_PORT 50550
 
 #define MAX_FILMS 10
 
 enum packet_type {
+    PT_ERROR,
+
     PT_INSERT_FILME,
     PT_REMOVE_FILME,
     PT_LIST_TITULO_SALA,
