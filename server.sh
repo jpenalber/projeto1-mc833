@@ -40,7 +40,7 @@ echo "" > server.csv
 len=$(expr $tudo_len - 1)
 for i in $(seq 0 $len); do
     echo -n ${inserir_array[i]}"," >> server.csv
-    echo -n ${remover_array[i]}"," >> server.csv
+    #echo -n ${remover_array[i]}"," >> server.csv
     echo -n ${listar_titulo_array[i]}"," >> server.csv
     echo -n ${listar_genero_array[i]}"," >> server.csv
     echo -n ${nome_array[i]}"," >> server.csv

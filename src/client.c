@@ -1,8 +1,11 @@
+#define _POSIX_C_SOURCE 199309L
+
 #include <stdio.h>
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <string.h>
 #include <sys/time.h>
+#include <time.h>
 #include <errno.h>
 
 #include <common.h>
@@ -76,8 +79,8 @@ int main(int argc, char *argv[]) {
 
         memcpy(packet.data, &film, sizeof(film));
 
-        struct timeval begin;
-        gettimeofday(&begin, NULL);
+        struct timespec begin;
+        clock_gettime(CLOCK_BOOTTIME, &begin);
 
         write(sockfd, &packet, sizeof(packet));
 
@@ -92,10 +95,10 @@ int main(int argc, char *argv[]) {
             bufflen -= count;
         } while (count > 0 && bufflen > 0);
 
-        struct timeval end;
-        gettimeofday(&end, NULL);
+        struct timespec end;
+        clock_gettime(CLOCK_BOOTTIME, &end);
 
-        printf("\n%% %f\n", (end.tv_usec-begin.tv_usec)/1000000.0f);
+        printf("\n%% %f\n", (end.tv_nsec-begin.tv_nsec)/1000000000.0f);
 
         memcpy(&packet, buffer, sizeof(buffer));
 
@@ -112,8 +115,8 @@ int main(int argc, char *argv[]) {
     else if (!strcmp(type, "listar_titulo")) {
         packet.type = PT_LIST_TITULO_SALA;
 
-        struct timeval begin;
-        gettimeofday(&begin, NULL);
+        struct timespec begin;
+        clock_gettime(CLOCK_BOOTTIME, &begin);
 
         write(sockfd, &packet, sizeof(packet));
 
@@ -128,10 +131,10 @@ int main(int argc, char *argv[]) {
             bufflen -= count;
         } while (count > 0 && bufflen > 0);
 
-        struct timeval end;
-        gettimeofday(&end, NULL);
+        struct timespec end;
+        clock_gettime(CLOCK_BOOTTIME, &end);
 
-        printf("\n%% %f\n", (end.tv_usec-begin.tv_usec)/1000000.0f);
+        printf("\n%% %f\n", (end.tv_nsec-begin.tv_nsec)/1000000000.0f);
 
         memcpy(&packet, buffer, sizeof(buffer));
 
@@ -149,8 +152,8 @@ int main(int argc, char *argv[]) {
         printf("Genero: ");
         scanf(" %[^\n]s", packet.data);
 
-        struct timeval begin;
-        gettimeofday(&begin, NULL);
+        struct timespec begin;
+        clock_gettime(CLOCK_BOOTTIME, &begin);
 
         write(sockfd, &packet, sizeof(packet));
 
@@ -165,10 +168,10 @@ int main(int argc, char *argv[]) {
             bufflen -= count;
         } while (count > 0 && bufflen > 0);
 
-        struct timeval end;
-        gettimeofday(&end, NULL);
+        struct timespec end;
+        clock_gettime(CLOCK_BOOTTIME, &end);
 
-        printf("\n%% %f\n", (end.tv_usec-begin.tv_usec)/1000000.0f);
+        printf("\n%% %f\n", (end.tv_nsec-begin.tv_nsec)/1000000000.0f);
 
         memcpy(&packet, buffer, sizeof(buffer));
 
@@ -186,8 +189,8 @@ int main(int argc, char *argv[]) {
         printf("ID: ");
         scanf(" %d", (int *) &packet.data);
 
-        struct timeval begin;
-        gettimeofday(&begin, NULL);
+        struct timespec begin;
+        clock_gettime(CLOCK_BOOTTIME, &begin);
 
         write(sockfd, &packet, sizeof(packet));
 
@@ -202,10 +205,10 @@ int main(int argc, char *argv[]) {
             bufflen -= count;
         } while (count > 0 && bufflen > 0);
 
-        struct timeval end;
-        gettimeofday(&end, NULL);
+        struct timespec end;
+        clock_gettime(CLOCK_BOOTTIME, &end);
 
-        printf("\n%% %f\n", (end.tv_usec-begin.tv_usec)/1000000.0f);
+        printf("\n%% %f\n", (end.tv_nsec-begin.tv_nsec)/1000000000.0f);
 
         memcpy(&packet, buffer, sizeof(buffer));
 
@@ -217,8 +220,8 @@ int main(int argc, char *argv[]) {
         printf("ID: ");
         scanf(" %d", (int *) &packet.data);
 
-        struct timeval begin;
-        gettimeofday(&begin, NULL);
+        struct timespec begin;
+        clock_gettime(CLOCK_BOOTTIME, &begin);
 
         write(sockfd, &packet, sizeof(packet));
 
@@ -233,10 +236,10 @@ int main(int argc, char *argv[]) {
             bufflen -= count;
         } while (count > 0 && bufflen > 0);
 
-        struct timeval end;
-        gettimeofday(&end, NULL);
+        struct timespec end;
+        clock_gettime(CLOCK_BOOTTIME, &end);
 
-        printf("\n%% %f\n", (end.tv_usec-begin.tv_usec)/1000000.0f);
+        printf("\n%% %f\n", (end.tv_nsec-begin.tv_nsec)/1000000000.0f);
 
         memcpy(&packet, buffer, sizeof(buffer));
 
@@ -248,8 +251,8 @@ int main(int argc, char *argv[]) {
     else if (!strcmp(type, "tudo")) {
         packet.type = PT_LIST_ALL;
 
-        struct timeval begin;
-        gettimeofday(&begin, NULL);
+        struct timespec begin;
+        clock_gettime(CLOCK_BOOTTIME, &begin);
 
         write(sockfd, &packet, sizeof(packet));
 
@@ -264,10 +267,10 @@ int main(int argc, char *argv[]) {
             bufflen -= count;
         } while (count > 0 && bufflen > 0);
 
-        struct timeval end;
-        gettimeofday(&end, NULL);
+        struct timespec end;
+        clock_gettime(CLOCK_BOOTTIME, &end);
 
-        printf("\n%% %f\n", (end.tv_usec-begin.tv_usec)/1000000.0f);
+        printf("\n%% %f\n", (end.tv_nsec-begin.tv_nsec)/1000000000.0f);
 
         memcpy(&packet, buffer, sizeof(buffer));
 

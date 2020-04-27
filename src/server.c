@@ -1,17 +1,19 @@
+#define _POSIX_C_SOURCE 199309L
+
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/time.h>
 #include <time.h>
 #include <arpa/inet.h>
-#include <sys/time.h>
 
 #include <common.h>
 #include <dbinterface.h>
 
-void printTime(const char *prefix, struct timeval time) {
-    suseconds_t usecs_before = time.tv_usec;
-    gettimeofday(&time, NULL);
-    printf("%%-%s-%f\n", prefix, (time.tv_usec - usecs_before)/1000000.0f);
+void printTime(const char *prefix, struct timespec time) {
+    long nsecs_before = time.tv_nsec;
+    clock_gettime(CLOCK_BOOTTIME, &time);
+    printf("%%-%s-%f\n", prefix, (time.tv_nsec - nsecs_before)/1000000000.0f);
 }
 
 int toStaticArray(struct staticFilme films[MAX_FILMS], s_filme **list, int n) {
@@ -36,8 +38,6 @@ int toStaticArray(struct staticFilme films[MAX_FILMS], s_filme **list, int n) {
 }
 
 int main(int argc, char *argv[]) {
-    struct timeval time;
-
     int listenfd = 0;
 
     if ((listenfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -85,7 +85,8 @@ int main(int argc, char *argv[]) {
 
             memcpy(&packet, buffer, sizeof(buffer));
 
-            gettimeofday(&time, NULL);
+            struct timespec time;
+            clock_gettime(CLOCK_BOOTTIME, &time);
             switch (packet.type) {
                 case PT_INSERT_FILME:
                     {
