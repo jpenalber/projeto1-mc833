@@ -1,17 +1,17 @@
 declare -a inserir_array
-inserir_len=31
+inserir_len=61
 declare -a remover_array
-remover_len=1
+remover_len=61
 declare -a listar_titulo_array
-listar_titulo_len=1
+listar_titulo_len=61
 declare -a listar_genero_array
-listar_genero_len=1
+listar_genero_len=61
 declare -a nome_array
-nome_len=1
+nome_len=61
 declare -a info_array
-info_len=1
+info_len=61
 declare -a tudo_array
-tudo_len=31
+tudo_len=61
 
 inserir_array[0]="inserir"
 remover_array[0]="remover"
@@ -21,7 +21,7 @@ nome_array[0]="nome"
 info_array[0]="info"
 tudo_array[0]="tudo"
 
-for i in $(seq 1 31); do
+for i in $(seq 1 61); do
     ./bin/client.x < ./in/inserir_client_in > client_out
     time=$(grep % client_out)
     time=${time//% }
