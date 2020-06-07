@@ -40,12 +40,13 @@ int toStaticArray(struct staticFilme films[MAX_FILMS], s_filme **list, int n) {
 int main(int argc, char *argv[]) {
     int listenfd = 0;
 
-    if ((listenfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+    if ((listenfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
         puts("Could not create socket");
         return 1;
     }
 
-    struct sockaddr_in serv_addr = {0};
+    struct sockaddr_in serv_addr = {0}, cliaddr;
+    socklen_t len;
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     serv_addr.sin_port = htons(SERVER_PORT);
@@ -61,14 +62,6 @@ int main(int argc, char *argv[]) {
     open_db("test.db");
 
     while(1) {
-        puts("Accepting...");
-        int connfd = accept(listenfd, (struct sockaddr*)NULL, NULL);
-
-        if (fork()) {
-            // Parent
-            close(connfd);
-        }
-        else {
             // Child
             struct packet packet = {0};
 
@@ -77,11 +70,13 @@ int main(int argc, char *argv[]) {
             char *bufftmp = &buffer[0];
             size_t bufflen = sizeof(packet);
 
-            do {
-                count = read(connfd, bufftmp, bufflen-1);
-                bufftmp += count;
-                bufflen -= count;
-            } while (count > 0 && bufflen > 0);
+            // do {
+            //     count = recvfrom(listenfd, bufftmp, bufflen-1, 0, &cliaddr, &len);
+            //     bufftmp += count;
+            //     bufflen -= count;
+            // } while (count > 0 && bufflen > 0);
+            printf("Acepting ...\n");
+            count = recvfrom(listenfd, bufftmp, bufflen-1, 0, (struct sockaddr *)&cliaddr, &len);
 
             memcpy(&packet, buffer, sizeof(buffer));
 
@@ -105,7 +100,7 @@ int main(int argc, char *argv[]) {
 
                         printTime("inserir", time);
 
-                        write(connfd, &packet, sizeof(packet));
+                        sendto(listenfd, &packet, sizeof(packet), 0, (struct sockaddr *)&cliaddr, len);
                     }
                     break;
                 case PT_REMOVE_FILME:
@@ -133,7 +128,7 @@ int main(int argc, char *argv[]) {
 
                         printTime("listar_titulo", time);
 
-                        write(connfd, &packet, sizeof(packet));
+                        sendto(listenfd, &packet, sizeof(packet), 0, (struct sockaddr *)&cliaddr, len);
                     }
                     break;
                 case PT_LIST_GENERO:
@@ -151,7 +146,7 @@ int main(int argc, char *argv[]) {
 
                         printTime("listar_genero", time);
 
-                        write(connfd, &packet, sizeof(packet));
+                        sendto(listenfd, &packet, sizeof(packet), 0, (struct sockaddr *)&cliaddr, len);
                     }
                     break;
                 case PT_FILM_NAME_FROM_ID:
@@ -166,7 +161,7 @@ int main(int argc, char *argv[]) {
 
                         printTime("nome", time);
 
-                        write(connfd, &packet, sizeof(packet));
+                        sendto(listenfd, &packet, sizeof(packet), 0, (struct sockaddr *)&cliaddr, len);
                     }
                     break;
                 case PT_FILM_INFO_FROM_ID:
@@ -188,7 +183,7 @@ int main(int argc, char *argv[]) {
 
                         printTime("info", time);
 
-                        write(connfd, &packet, sizeof(packet));
+                        sendto(listenfd, &packet, sizeof(packet), 0, (struct sockaddr *)&cliaddr, len);
                     }
                     break;
                 case PT_LIST_ALL:
@@ -206,15 +201,13 @@ int main(int argc, char *argv[]) {
 
                         printTime("tudo", time);
 
-                        write(connfd, &packet, sizeof(packet));
+                        sendto(listenfd, &packet, sizeof(packet), 0, (struct sockaddr *)&cliaddr, len);
                     }
                     break;
                 default:
                     puts("Malformed packet");
             }
 
-            close(connfd);
-            return 0;
-        }
+            // return 0;
     }
 }

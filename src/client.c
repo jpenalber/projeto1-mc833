@@ -11,8 +11,8 @@
 #include <common.h>
 #include <filme.h>
 
-#define SERVER_IP "187.56.54.16"
-//#define SERVER_IP "localhost"
+// #define SERVER_IP "187.56.54.16"
+#define SERVER_IP "localhost"
 
 void printFilms(struct staticFilme films[MAX_FILMS], int len) {
     for (int i = 0; i < len; i++) {
@@ -33,7 +33,7 @@ void printFilms(struct staticFilme films[MAX_FILMS], int len) {
 int main(int argc, char *argv[]) {
     int sockfd = 0;
 
-    if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+    if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
         puts("Could not create socket");
         return 1;
     }
@@ -43,11 +43,11 @@ int main(int argc, char *argv[]) {
     serv_addr.sin_port = htons(SERVER_PORT);
     inet_pton(AF_INET, SERVER_IP, &serv_addr.sin_addr);
 
-    puts("Connecting...");
-    if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
-        printf("Connect Failed %d\n", errno);
-        return 1;
-    }
+    // puts("Connecting...");
+    // if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
+    //     printf("Connect Failed %d\n", errno);
+    //     return 1;
+    // }
     printf("Operacoes:\n"
             "\tinserir\t\t insere filme\n"
             "\tremover\t\t remove filme por ID\n"
@@ -82,18 +82,19 @@ int main(int argc, char *argv[]) {
         struct timespec begin;
         clock_gettime(CLOCK_BOOTTIME, &begin);
 
-        write(sockfd, &packet, sizeof(packet));
+        sendto(sockfd, &packet, sizeof(packet), 0, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
 
         int count;
         char buffer[sizeof(packet)];
         char *bufftmp = &buffer[0];
         size_t bufflen = sizeof(packet);
 
-        do {
-            count = read(sockfd, bufftmp, bufflen-1);
-            bufftmp += count;
-            bufflen -= count;
-        } while (count > 0 && bufflen > 0);
+        // do {
+        //     count = read(sockfd, bufftmp, bufflen-1);
+        //     bufftmp += count;
+        //     bufflen -= count;
+        // } while (count > 0 && bufflen > 0);
+         count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
 
         struct timespec end;
         clock_gettime(CLOCK_BOOTTIME, &end);
@@ -110,7 +111,7 @@ int main(int argc, char *argv[]) {
         printf("ID: ");
         scanf(" %d", (int *) &packet.data);
 
-        write(sockfd, &packet, sizeof(packet));
+        sendto(sockfd, &packet, sizeof(packet), 0, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
     }
     else if (!strcmp(type, "listar_titulo")) {
         packet.type = PT_LIST_TITULO_SALA;
@@ -118,18 +119,19 @@ int main(int argc, char *argv[]) {
         struct timespec begin;
         clock_gettime(CLOCK_BOOTTIME, &begin);
 
-        write(sockfd, &packet, sizeof(packet));
+        sendto(sockfd, &packet, sizeof(packet), 0, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
 
         int count;
         char buffer[sizeof(packet)];
         char *bufftmp = &buffer[0];
         size_t bufflen = sizeof(packet);
 
-        do {
-            count = read(sockfd, bufftmp, bufflen-1);
-            bufftmp += count;
-            bufflen -= count;
-        } while (count > 0 && bufflen > 0);
+        // do {
+        //     count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+        //     bufftmp += count;
+        //     bufflen -= count;
+        // } while (count > 0 && bufflen > 0);
+        count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
 
         struct timespec end;
         clock_gettime(CLOCK_BOOTTIME, &end);
@@ -155,18 +157,14 @@ int main(int argc, char *argv[]) {
         struct timespec begin;
         clock_gettime(CLOCK_BOOTTIME, &begin);
 
-        write(sockfd, &packet, sizeof(packet));
+        sendto(sockfd, &packet, sizeof(packet), 0, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
 
         int count;
         char buffer[sizeof(packet)];
         char *bufftmp = &buffer[0];
         size_t bufflen = sizeof(packet);
 
-        do {
-            count = read(sockfd, bufftmp, bufflen-1);
-            bufftmp += count;
-            bufflen -= count;
-        } while (count > 0 && bufflen > 0);
+        count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
 
         struct timespec end;
         clock_gettime(CLOCK_BOOTTIME, &end);
@@ -192,18 +190,14 @@ int main(int argc, char *argv[]) {
         struct timespec begin;
         clock_gettime(CLOCK_BOOTTIME, &begin);
 
-        write(sockfd, &packet, sizeof(packet));
+        sendto(sockfd, &packet, sizeof(packet), 0, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
 
         int count;
         char buffer[sizeof(packet)];
         char *bufftmp = &buffer[0];
         size_t bufflen = sizeof(packet);
 
-        do {
-            count = read(sockfd, bufftmp, bufflen-1);
-            bufftmp += count;
-            bufflen -= count;
-        } while (count > 0 && bufflen > 0);
+        count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
 
         struct timespec end;
         clock_gettime(CLOCK_BOOTTIME, &end);
@@ -223,18 +217,14 @@ int main(int argc, char *argv[]) {
         struct timespec begin;
         clock_gettime(CLOCK_BOOTTIME, &begin);
 
-        write(sockfd, &packet, sizeof(packet));
+        sendto(sockfd, &packet, sizeof(packet), 0, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
 
         int count;
         char buffer[sizeof(packet)];
         char *bufftmp = &buffer[0];
         size_t bufflen = sizeof(packet);
 
-        do {
-            count = read(sockfd, bufftmp, bufflen-1);
-            bufftmp += count;
-            bufflen -= count;
-        } while (count > 0 && bufflen > 0);
+        count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
 
         struct timespec end;
         clock_gettime(CLOCK_BOOTTIME, &end);
@@ -254,18 +244,14 @@ int main(int argc, char *argv[]) {
         struct timespec begin;
         clock_gettime(CLOCK_BOOTTIME, &begin);
 
-        write(sockfd, &packet, sizeof(packet));
+        sendto(sockfd, &packet, sizeof(packet), 0, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
 
         int count;
         char buffer[sizeof(packet)];
         char *bufftmp = &buffer[0];
         size_t bufflen = sizeof(packet);
 
-        do {
-            count = read(sockfd, bufftmp, bufflen-1);
-            bufftmp += count;
-            bufflen -= count;
-        } while (count > 0 && bufflen > 0);
+        count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
 
         struct timespec end;
         clock_gettime(CLOCK_BOOTTIME, &end);
