@@ -118,15 +118,13 @@ int main(int argc, char *argv[]) {
 
         struct staticFilme films[MAX_FILMS];
 
-        int total;
+        int total = 0;
         while (1) {
             count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+            total++;
             memcpy(&packet, buffer, sizeof(buffer));
             memcpy(&films[packet.id], packet.data, packet.len*sizeof(struct staticFilme));
-            if (packet.id == packet.total - 1) {
-                total = packet.total;
-                break;
-            }
+            if (total == packet.total) break;
         }
 
         struct timespec end;
@@ -157,15 +155,13 @@ int main(int argc, char *argv[]) {
 
         struct staticFilme films[MAX_FILMS];
 
-        int total;
+        int total = 0;
         while (1) {
             count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+            total++;
             memcpy(&packet, buffer, sizeof(buffer));
             memcpy(&films[packet.id], packet.data, packet.len*sizeof(struct staticFilme));
-            if (packet.id == packet.total - 1) {
-                total = packet.total;
-                break;
-            }
+            if (total == packet.total) break;
         }
 
         struct timespec end;
@@ -250,15 +246,13 @@ int main(int argc, char *argv[]) {
 
         struct staticFilme films[MAX_FILMS];
 
-        int total;
+        int total = 0;
         while (1) {
             count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+            total++;
             memcpy(&packet, buffer, sizeof(buffer));
             memcpy(&films[packet.id], packet.data, packet.len*sizeof(struct staticFilme));
-            if (packet.id == packet.total - 1) {
-                total = packet.total;
-                break;
-            }
+            if (total == packet.total) break;
         }
 
         struct timespec end;
