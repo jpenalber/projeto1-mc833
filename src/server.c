@@ -70,11 +70,6 @@ int main(int argc, char *argv[]) {
             char *bufftmp = &buffer[0];
             size_t bufflen = sizeof(packet);
 
-            // do {
-            //     count = recvfrom(listenfd, bufftmp, bufflen-1, 0, &cliaddr, &len);
-            //     bufftmp += count;
-            //     bufflen -= count;
-            // } while (count > 0 && bufflen > 0);
             printf("Acepting ...\n");
             count = recvfrom(listenfd, bufftmp, bufflen-1, 0, (struct sockaddr *)&cliaddr, &len);
 
@@ -96,7 +91,9 @@ int main(int argc, char *argv[]) {
                         int id = insertFilmeStruct(film);
 
                         packet.type = PT_INSERT_FILME_RESULT;
-                        memcpy(packet.data, &id, sizeof(id));
+                        packet.id = packet.total = 1;
+                        packet.len = sizeof(id);
+                        memcpy(packet.data, &id, packet.len);
 
                         printTime("inserir", time);
 
@@ -123,12 +120,15 @@ int main(int argc, char *argv[]) {
                         struct staticFilme films[MAX_FILMS];
                         count = toStaticArray(films, list, count);
 
-                        memcpy(packet.data, films, sizeof(films));
-                        packet.len = count;
+                        for (int i = 0; i < count; i++) {
+                            memcpy(packet.data, &films[i], sizeof(struct staticFilme));
+                            packet.id = i;
+                            packet.total = count;
+                            packet.len = 1;
+                            sendto(listenfd, &packet, sizeof(packet), 0, (struct sockaddr *)&cliaddr, len);
+                        }
 
                         printTime("listar_titulo", time);
-
-                        sendto(listenfd, &packet, sizeof(packet), 0, (struct sockaddr *)&cliaddr, len);
                     }
                     break;
                 case PT_LIST_GENERO:
@@ -141,12 +141,15 @@ int main(int argc, char *argv[]) {
                         struct staticFilme films[MAX_FILMS];
                         count = toStaticArray(films, list, count);
 
-                        memcpy(packet.data, films, sizeof(films));
-                        packet.len = count;
+                        for (int i = 0; i < count; i++) {
+                            memcpy(packet.data, &films[i], sizeof(struct staticFilme));
+                            packet.id = i;
+                            packet.total = count;
+                            packet.len = 1;
+                            sendto(listenfd, &packet, sizeof(packet), 0, (struct sockaddr *)&cliaddr, len);
+                        }
 
                         printTime("listar_genero", time);
-
-                        sendto(listenfd, &packet, sizeof(packet), 0, (struct sockaddr *)&cliaddr, len);
                     }
                     break;
                 case PT_FILM_NAME_FROM_ID:
@@ -196,12 +199,15 @@ int main(int argc, char *argv[]) {
                         struct staticFilme films[MAX_FILMS];
                         count = toStaticArray(films, list, count);
 
-                        memcpy(packet.data, films, sizeof(films));
-                        packet.len = count;
+                        for (int i = 0; i < count; i++) {
+                            memcpy(packet.data, &films[i], sizeof(struct staticFilme));
+                            packet.id = i;
+                            packet.total = count;
+                            packet.len = 1;
+                            sendto(listenfd, &packet, sizeof(packet), 0, (struct sockaddr *)&cliaddr, len);
+                        }
 
                         printTime("tudo", time);
-
-                        sendto(listenfd, &packet, sizeof(packet), 0, (struct sockaddr *)&cliaddr, len);
                     }
                     break;
                 default:

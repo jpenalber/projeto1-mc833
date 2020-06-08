@@ -23,6 +23,7 @@ enum packet_type {
 
 struct packet {
     enum packet_type type;
+    int id, total;
     int len;
     char data[6000];
 };

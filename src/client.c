@@ -43,11 +43,6 @@ int main(int argc, char *argv[]) {
     serv_addr.sin_port = htons(SERVER_PORT);
     inet_pton(AF_INET, SERVER_IP, &serv_addr.sin_addr);
 
-    // puts("Connecting...");
-    // if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
-    //     printf("Connect Failed %d\n", errno);
-    //     return 1;
-    // }
     printf("Operacoes:\n"
             "\tinserir\t\t insere filme\n"
             "\tremover\t\t remove filme por ID\n"
@@ -62,6 +57,8 @@ int main(int argc, char *argv[]) {
     scanf(" %s", type);
 
     struct packet packet = {0};
+    packet.id = 0;
+    packet.total = 0;
     if (!strcmp(type, "inserir")) {
         packet.type = PT_INSERT_FILME;
 
@@ -74,8 +71,6 @@ int main(int argc, char *argv[]) {
         scanf(" %[^\n]s", film.descricao);
         printf("Sala: ");
         scanf(" %d", &film.sala);
-        // printf("Tipo da sala: ");
-        // scanf(" %[^\n]s", film.sala_tipo);
 
         memcpy(packet.data, &film, sizeof(film));
 
@@ -89,12 +84,7 @@ int main(int argc, char *argv[]) {
         char *bufftmp = &buffer[0];
         size_t bufflen = sizeof(packet);
 
-        // do {
-        //     count = read(sockfd, bufftmp, bufflen-1);
-        //     bufftmp += count;
-        //     bufflen -= count;
-        // } while (count > 0 && bufflen > 0);
-         count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+        count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
 
         struct timespec end;
         clock_gettime(CLOCK_BOOTTIME, &end);
@@ -126,24 +116,25 @@ int main(int argc, char *argv[]) {
         char *bufftmp = &buffer[0];
         size_t bufflen = sizeof(packet);
 
-        // do {
-        //     count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
-        //     bufftmp += count;
-        //     bufflen -= count;
-        // } while (count > 0 && bufflen > 0);
-        count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+        struct staticFilme films[MAX_FILMS];
+
+        int total;
+        while (1) {
+            count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+            memcpy(&packet, buffer, sizeof(buffer));
+            memcpy(&films[packet.id], packet.data, packet.len*sizeof(struct staticFilme));
+            if (packet.id == packet.total - 1) {
+                total = packet.total;
+                break;
+            }
+        }
 
         struct timespec end;
         clock_gettime(CLOCK_BOOTTIME, &end);
 
         printf("\n%% %f\n", (end.tv_nsec-begin.tv_nsec)/1000000000.0f);
 
-        memcpy(&packet, buffer, sizeof(buffer));
-
-        struct staticFilme films[MAX_FILMS];
-        memcpy(films, packet.data, packet.len*sizeof(struct staticFilme));
-
-        for (int i = 0; i < packet.len; i++) {
+        for (int i = 0; i < total; i++) {
             printf("nome: %s\n", films[i].nome);
             printf("sala: %d\n\n", films[i].sala);
         }
@@ -164,19 +155,25 @@ int main(int argc, char *argv[]) {
         char *bufftmp = &buffer[0];
         size_t bufflen = sizeof(packet);
 
-        count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+        struct staticFilme films[MAX_FILMS];
+
+        int total;
+        while (1) {
+            count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+            memcpy(&packet, buffer, sizeof(buffer));
+            memcpy(&films[packet.id], packet.data, packet.len*sizeof(struct staticFilme));
+            if (packet.id == packet.total - 1) {
+                total = packet.total;
+                break;
+            }
+        }
 
         struct timespec end;
         clock_gettime(CLOCK_BOOTTIME, &end);
 
         printf("\n%% %f\n", (end.tv_nsec-begin.tv_nsec)/1000000000.0f);
 
-        memcpy(&packet, buffer, sizeof(buffer));
-
-        struct staticFilme films[MAX_FILMS];
-        memcpy(films, packet.data, packet.len*sizeof(struct staticFilme));
-
-        for (int i = 0; i < packet.len; i++) {
+        for (int i = 0; i < total; i++) {
             printf("id: %d\n", films[i].id);
             printf("nome: %s\n\n", films[i].nome);
         }
@@ -251,19 +248,25 @@ int main(int argc, char *argv[]) {
         char *bufftmp = &buffer[0];
         size_t bufflen = sizeof(packet);
 
-        count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+        struct staticFilme films[MAX_FILMS];
+
+        int total;
+        while (1) {
+            count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+            memcpy(&packet, buffer, sizeof(buffer));
+            memcpy(&films[packet.id], packet.data, packet.len*sizeof(struct staticFilme));
+            if (packet.id == packet.total - 1) {
+                total = packet.total;
+                break;
+            }
+        }
 
         struct timespec end;
         clock_gettime(CLOCK_BOOTTIME, &end);
 
         printf("\n%% %f\n", (end.tv_nsec-begin.tv_nsec)/1000000000.0f);
 
-        memcpy(&packet, buffer, sizeof(buffer));
-
-        struct staticFilme films[MAX_FILMS];
-        memcpy(films, packet.data, packet.len*sizeof(struct staticFilme));
-
-        printFilms(films, packet.len);
+        printFilms(films, total);
     }
     else {
         puts("Wrong command");
