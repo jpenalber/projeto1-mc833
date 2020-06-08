@@ -7,12 +7,15 @@
 #include <sys/time.h>
 #include <time.h>
 #include <errno.h>
+#include <poll.h>
 
 #include <common.h>
 #include <filme.h>
 
 // #define SERVER_IP "187.56.54.16"
 #define SERVER_IP "localhost"
+
+#define TIMEOUT 10000
 
 void printFilms(struct staticFilme films[MAX_FILMS], int len) {
     for (int i = 0; i < len; i++) {
@@ -37,6 +40,10 @@ int main(int argc, char *argv[]) {
         puts("Could not create socket");
         return 1;
     }
+
+    struct pollfd poll_set;
+    poll_set.fd = sockfd;
+    poll_set.events = POLLIN;
 
     struct sockaddr_in serv_addr = {0};
     serv_addr.sin_family = AF_INET;
@@ -84,7 +91,11 @@ int main(int argc, char *argv[]) {
         char *bufftmp = &buffer[0];
         size_t bufflen = sizeof(packet);
 
-        count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+        if (poll(&poll_set, 1, TIMEOUT) > 0) {
+            count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+        } else {
+            printf("Unexpected error on communication!\n");
+        }
 
         struct timespec end;
         clock_gettime(CLOCK_BOOTTIME, &end);
@@ -120,7 +131,11 @@ int main(int argc, char *argv[]) {
 
         int total = 0;
         while (1) {
-            count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+            if (poll(&poll_set, 1, TIMEOUT) > 0) {
+                count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+            } else {
+                printf("Unexpected error on communication!\n");
+            }
             total++;
             memcpy(&packet, buffer, sizeof(buffer));
             memcpy(&films[packet.id], packet.data, packet.len*sizeof(struct staticFilme));
@@ -157,7 +172,11 @@ int main(int argc, char *argv[]) {
 
         int total = 0;
         while (1) {
-            count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+            if (poll(&poll_set, 1, TIMEOUT) > 0) {
+                count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+            } else {
+                printf("Unexpected error on communication!\n");
+            }
             total++;
             memcpy(&packet, buffer, sizeof(buffer));
             memcpy(&films[packet.id], packet.data, packet.len*sizeof(struct staticFilme));
@@ -190,7 +209,11 @@ int main(int argc, char *argv[]) {
         char *bufftmp = &buffer[0];
         size_t bufflen = sizeof(packet);
 
-        count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+        if (poll(&poll_set, 1, TIMEOUT) > 0) {
+            count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+        } else {
+            printf("Unexpected error on communication!\n");
+        }
 
         struct timespec end;
         clock_gettime(CLOCK_BOOTTIME, &end);
@@ -217,7 +240,11 @@ int main(int argc, char *argv[]) {
         char *bufftmp = &buffer[0];
         size_t bufflen = sizeof(packet);
 
-        count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+        if (poll(&poll_set, 1, TIMEOUT) > 0) {
+            count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+        } else {
+            printf("Unexpected error on communication!\n");
+        }
 
         struct timespec end;
         clock_gettime(CLOCK_BOOTTIME, &end);
@@ -248,7 +275,11 @@ int main(int argc, char *argv[]) {
 
         int total = 0;
         while (1) {
-            count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+            if (poll(&poll_set, 1, TIMEOUT) > 0) {
+                count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+            } else {
+                printf("Unexpected error on communication!\n");
+            }
             total++;
             memcpy(&packet, buffer, sizeof(buffer));
             memcpy(&films[packet.id], packet.data, packet.len*sizeof(struct staticFilme));
