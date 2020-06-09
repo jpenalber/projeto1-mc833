@@ -72,6 +72,7 @@ int main(int argc, char *argv[]) {
         if (!strcmp(type, "sair")) {
             break;
         }else if (!strcmp(type, "inserir")) {
+start_inserir:
             packet.type = PT_INSERT_FILME;
 
             struct staticFilme film;
@@ -99,7 +100,7 @@ int main(int argc, char *argv[]) {
             if (poll(&poll_set, 1, TIMEOUT) > 0) {
                 count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
             } else {
-                printf("Unexpected error on communication!\n");
+                goto start_inserir;
             }
 
             struct timespec end;
@@ -120,6 +121,7 @@ int main(int argc, char *argv[]) {
             sendto(sockfd, &packet, sizeof(packet), 0, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
         }
         else if (!strcmp(type, "listar_titulo")) {
+start_listar_titulo:
             packet.type = PT_LIST_TITULO_SALA;
 
             struct timespec begin;
@@ -139,7 +141,7 @@ int main(int argc, char *argv[]) {
                 if (poll(&poll_set, 1, TIMEOUT) > 0) {
                     count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
                 } else {
-                    printf("Unexpected error on communication!\n");
+                    goto start_listar_titulo;
                 }
                 total++;
                 memcpy(&packet, buffer, sizeof(buffer));
@@ -158,6 +160,7 @@ int main(int argc, char *argv[]) {
             }
         }
         else if (!strcmp(type, "listar_genero")) {
+start_listar_genero:
             packet.type = PT_LIST_GENERO;
 
             printf("Genero: ");
@@ -180,7 +183,7 @@ int main(int argc, char *argv[]) {
                 if (poll(&poll_set, 1, TIMEOUT) > 0) {
                     count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
                 } else {
-                    printf("Unexpected error on communication!\n");
+                    goto start_listar_genero;
                 }
                 total++;
                 memcpy(&packet, buffer, sizeof(buffer));
@@ -199,6 +202,7 @@ int main(int argc, char *argv[]) {
             }
         }
         else if (!strcmp(type, "nome")) {
+start_nome:
             packet.type = PT_FILM_NAME_FROM_ID;
 
             printf("ID: ");
@@ -217,7 +221,7 @@ int main(int argc, char *argv[]) {
             if (poll(&poll_set, 1, TIMEOUT) > 0) {
                 count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
             } else {
-                printf("Unexpected error on communication!\n");
+                goto start_nome;
             }
 
             struct timespec end;
@@ -230,6 +234,7 @@ int main(int argc, char *argv[]) {
             printf("%s\n", packet.data);
         }
         else if (!strcmp(type, "info")) {
+start_info:
             packet.type = PT_FILM_INFO_FROM_ID;
 
             printf("ID: ");
@@ -248,7 +253,7 @@ int main(int argc, char *argv[]) {
             if (poll(&poll_set, 1, TIMEOUT) > 0) {
                 count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
             } else {
-                printf("Unexpected error on communication!\n");
+                goto start_info;
             }
 
             struct timespec end;
@@ -264,6 +269,7 @@ int main(int argc, char *argv[]) {
             printFilms(&film, 1);
         }
         else if (!strcmp(type, "tudo")) {
+start_tudo:
             packet.type = PT_LIST_ALL;
 
             struct timespec begin;
@@ -283,7 +289,7 @@ int main(int argc, char *argv[]) {
                 if (poll(&poll_set, 1, TIMEOUT) > 0) {
                     count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
                 } else {
-                    printf("Unexpected error on communication!\n");
+                    goto start_tudo;
                 }
                 total++;
                 memcpy(&packet, buffer, sizeof(buffer));
