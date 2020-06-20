@@ -216,8 +216,8 @@ int main(int argc, char *argv[]) {
                         printTime("tudo", time);
                     }
                     break;
-                default:
-                    puts("Malformed packet");
+                default:;
+                    //puts("Malformed packet");
             }
 
             // return 0;

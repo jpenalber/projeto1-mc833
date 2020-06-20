@@ -67,8 +67,8 @@ int main(int argc, char *argv[]) {
         scanf(" %s", type);
 
         struct packet packet = {0};
-        packet.id = 0;
-        packet.total = 0;
+	sendto(sockfd, &packet, sizeof(packet), 0, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
+
         if (!strcmp(type, "sair")) {
             break;
         }else if (!strcmp(type, "inserir")) {
