@@ -92,13 +92,12 @@ start_inserir:
 
             sendto(sockfd, &packet, sizeof(packet), 0, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
 
-            int count;
             char buffer[sizeof(packet)];
             char *bufftmp = &buffer[0];
             size_t bufflen = sizeof(packet);
 
             if (poll(&poll_set, 1, TIMEOUT) > 0) {
-                count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+                recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
             } else {
                 goto start_inserir;
             }
@@ -124,13 +123,12 @@ start_remover:
 
             sendto(sockfd, &packet, sizeof(packet), 0, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
 
-            int count;
             char buffer[sizeof(packet)];
             char *bufftmp = &buffer[0];
             size_t bufflen = sizeof(packet);
 
             if (poll(&poll_set, 1, TIMEOUT) > 0) {
-                count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+                recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
             } else {
                 goto start_remover;
             }
@@ -149,7 +147,6 @@ start_listar_titulo:
 
             sendto(sockfd, &packet, sizeof(packet), 0, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
 
-            int count;
             char buffer[sizeof(packet)];
             char *bufftmp = &buffer[0];
             size_t bufflen = sizeof(packet);
@@ -159,7 +156,7 @@ start_listar_titulo:
             int total = 0;
             while (1) {
                 if (poll(&poll_set, 1, TIMEOUT) > 0) {
-                    count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+                    recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
                 } else {
                     goto start_listar_titulo;
                 }
@@ -191,7 +188,6 @@ start_listar_genero:
 
             sendto(sockfd, &packet, sizeof(packet), 0, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
 
-            int count;
             char buffer[sizeof(packet)];
             char *bufftmp = &buffer[0];
             size_t bufflen = sizeof(packet);
@@ -201,7 +197,7 @@ start_listar_genero:
             int total = 0;
             while (1) {
                 if (poll(&poll_set, 1, TIMEOUT) > 0) {
-                    count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+                    recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
                 } else {
                     goto start_listar_genero;
                 }
@@ -233,13 +229,12 @@ start_nome:
 
             sendto(sockfd, &packet, sizeof(packet), 0, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
 
-            int count;
             char buffer[sizeof(packet)];
             char *bufftmp = &buffer[0];
             size_t bufflen = sizeof(packet);
 
             if (poll(&poll_set, 1, TIMEOUT) > 0) {
-                count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+                recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
             } else {
                 goto start_nome;
             }
@@ -265,13 +260,12 @@ start_info:
 
             sendto(sockfd, &packet, sizeof(packet), 0, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
 
-            int count;
             char buffer[sizeof(packet)];
             char *bufftmp = &buffer[0];
             size_t bufflen = sizeof(packet);
 
             if (poll(&poll_set, 1, TIMEOUT) > 0) {
-                count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+                recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
             } else {
                 goto start_info;
             }
@@ -297,7 +291,6 @@ start_tudo:
 
             sendto(sockfd, &packet, sizeof(packet), 0, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
 
-            int count;
             char buffer[sizeof(packet)];
             char *bufftmp = &buffer[0];
             size_t bufflen = sizeof(packet);
@@ -307,7 +300,7 @@ start_tudo:
             int total = 0;
             while (1) {
                 if (poll(&poll_set, 1, TIMEOUT) > 0) {
-                    count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+                    recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
                 } else {
                     goto start_tudo;
                 }

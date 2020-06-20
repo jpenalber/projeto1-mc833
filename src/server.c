@@ -65,13 +65,12 @@ int main(int argc, char *argv[]) {
             // Child
             struct packet packet = {0};
 
-            int count;
             char buffer[sizeof(packet)];
             char *bufftmp = &buffer[0];
             size_t bufflen = sizeof(packet);
 
             printf("Acepting ...\n");
-            count = recvfrom(listenfd, bufftmp, bufflen-1, 0, (struct sockaddr *)&cliaddr, &len);
+            recvfrom(listenfd, bufftmp, bufflen-1, 0, (struct sockaddr *)&cliaddr, &len);
 
             memcpy(&packet, buffer, sizeof(buffer));
 
