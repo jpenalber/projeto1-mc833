@@ -113,12 +113,32 @@ start_inserir:
             printf("ID %d\n", ((int *)packet.data)[0]);
         }
         else if (!strcmp(type, "remover")) {
+start_remover:
             packet.type = PT_REMOVE_FILME;
 
             printf("ID: ");
             scanf(" %d", (int *) &packet.data);
 
+            struct timespec begin;
+            clock_gettime(CLOCK_BOOTTIME, &begin);
+
             sendto(sockfd, &packet, sizeof(packet), 0, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
+
+            int count;
+            char buffer[sizeof(packet)];
+            char *bufftmp = &buffer[0];
+            size_t bufflen = sizeof(packet);
+
+            if (poll(&poll_set, 1, TIMEOUT) > 0) {
+                count = recvfrom(sockfd, bufftmp, bufflen-1, 0, NULL, NULL);
+            } else {
+                goto start_remover;
+            }
+
+            struct timespec end;
+            clock_gettime(CLOCK_BOOTTIME, &end);
+
+            printf("\n%% %f\n", (end.tv_nsec-begin.tv_nsec)/1000000000.0f);
         }
         else if (!strcmp(type, "listar_titulo")) {
 start_listar_titulo:

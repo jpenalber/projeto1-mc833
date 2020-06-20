@@ -107,7 +107,13 @@ int main(int argc, char *argv[]) {
 
                         removeFilme(id);
 
+                        packet.type = PT_REMOVE_FILME_RESULT;
+                        packet.id = packet.total = 1;
+                        packet.len = 0;
+
                         printTime("remover", time);
+
+                        sendto(listenfd, &packet, sizeof(packet), 0, (struct sockaddr *)&cliaddr, len);
                     }
                     break;
                 case PT_LIST_TITULO_SALA:
