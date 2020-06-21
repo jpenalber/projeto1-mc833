@@ -72,7 +72,6 @@ int main(int argc, char *argv[]) {
         if (!strcmp(type, "sair")) {
             break;
         }else if (!strcmp(type, "inserir")) {
-start_inserir:
             packet.type = PT_INSERT_FILME;
 
             struct staticFilme film;
@@ -85,6 +84,7 @@ start_inserir:
             printf("Sala: ");
             scanf(" %d", &film.sala);
 
+start_inserir:
             memcpy(packet.data, &film, sizeof(film));
 
             struct timespec begin;
@@ -112,11 +112,14 @@ start_inserir:
             printf("ID %d\n", ((int *)packet.data)[0]);
         }
         else if (!strcmp(type, "remover")) {
-start_remover:
             packet.type = PT_REMOVE_FILME;
 
+	    int id;
             printf("ID: ");
-            scanf(" %d", (int *) &packet.data);
+            scanf(" %d", &id);
+
+start_remover:
+	    memcpy(&packet.data, &id, sizeof(id));
 
             struct timespec begin;
             clock_gettime(CLOCK_BOOTTIME, &begin);
@@ -177,11 +180,14 @@ start_listar_titulo:
             }
         }
         else if (!strcmp(type, "listar_genero")) {
-start_listar_genero:
-            packet.type = PT_LIST_GENERO;
+            char name[500];
 
             printf("Genero: ");
-            scanf(" %[^\n]s", packet.data);
+            scanf(" %[^\n]s", name);
+
+start_listar_genero:
+            packet.type = PT_LIST_GENERO;
+	    memcpy(name, packet.data, sizeof(name));
 
             struct timespec begin;
             clock_gettime(CLOCK_BOOTTIME, &begin);
@@ -218,11 +224,14 @@ start_listar_genero:
             }
         }
         else if (!strcmp(type, "nome")) {
-start_nome:
             packet.type = PT_FILM_NAME_FROM_ID;
 
+	    int id;
             printf("ID: ");
-            scanf(" %d", (int *) &packet.data);
+            scanf(" %d", &id);
+
+start_nome:
+	    memcpy(&packet.data, &id, sizeof(id));
 
             struct timespec begin;
             clock_gettime(CLOCK_BOOTTIME, &begin);
@@ -249,11 +258,13 @@ start_nome:
             printf("%s\n", packet.data);
         }
         else if (!strcmp(type, "info")) {
-start_info:
             packet.type = PT_FILM_INFO_FROM_ID;
 
+	    int id;
             printf("ID: ");
-            scanf(" %d", (int *) &packet.data);
+            scanf(" %d", &id);
+start_info:
+	    memcpy(&packet.data, &id, sizeof(id));
 
             struct timespec begin;
             clock_gettime(CLOCK_BOOTTIME, &begin);
