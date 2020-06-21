@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
         scanf(" %s", type);
 
         struct packet packet = {0};
-	sendto(sockfd, &packet, sizeof(packet), 0, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
+        sendto(sockfd, &packet, sizeof(packet), 0, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
 
         if (!strcmp(type, "sair")) {
             break;
@@ -320,7 +320,6 @@ start_tudo:
         else {
             puts("Wrong command");
         }
-        
     }
     close(sockfd);
 
