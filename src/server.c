@@ -57,8 +57,6 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    listen(listenfd, 10);
-
     open_db("test.db");
 
     while(1) {
