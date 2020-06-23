@@ -165,6 +165,7 @@ start_listar_titulo:
                 }
                 total++;
                 memcpy(&packet, buffer, sizeof(buffer));
+                if (packet.total == -1) break;
                 memcpy(&films[packet.id], packet.data, packet.len*sizeof(struct staticFilme));
                 if (total == packet.total) break;
             }
@@ -209,6 +210,7 @@ start_listar_genero:
                 }
                 total++;
                 memcpy(&packet, buffer, sizeof(buffer));
+                if (packet.total == -1) break;
                 memcpy(&films[packet.id], packet.data, packet.len*sizeof(struct staticFilme));
                 if (total == packet.total) break;
             }
@@ -218,7 +220,7 @@ start_listar_genero:
 
             printf("\n%% %f\n", (end.tv_nsec-begin.tv_nsec)/1000000000.0f);
 
-            for (int i = 0; i < total; i++) {
+            for (int i = 0; i < total && packet.total != -1; i++) {
                 printf("id: %d\n", films[i].id);
                 printf("nome: %s\n\n", films[i].nome);
             }
@@ -317,6 +319,7 @@ start_tudo:
                 }
                 total++;
                 memcpy(&packet, buffer, sizeof(buffer));
+                if (packet.total == -1) break;
                 memcpy(&films[packet.id], packet.data, packet.len*sizeof(struct staticFilme));
                 if (total == packet.total) break;
             }

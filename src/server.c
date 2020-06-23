@@ -131,6 +131,15 @@ int main(int argc, char *argv[]) {
                             sendto(listenfd, &packet, sizeof(packet), 0, (struct sockaddr *)&cliaddr, len);
                         }
 
+                        printf("%d\n", count);
+                        if (count == 0) {
+                            printf("%d\n", count); 
+                            packet.id = 0;
+                            packet.total = -1;
+                            packet.len = 1;
+                            sendto(listenfd, &packet, sizeof(packet), 0, (struct sockaddr *)&cliaddr, len);
+                        }
+
                         printTime("listar_titulo", time);
                     }
                     break;
@@ -148,6 +157,14 @@ int main(int argc, char *argv[]) {
                             memcpy(packet.data, &films[i], sizeof(struct staticFilme));
                             packet.id = i;
                             packet.total = count;
+                            packet.len = 1;
+                            sendto(listenfd, &packet, sizeof(packet), 0, (struct sockaddr *)&cliaddr, len);
+                        }
+                        printf("%d\n", count);
+                        if (count == 0) {
+                            printf("%d\n", count); 
+                            packet.id = 0;
+                            packet.total = -1;
                             packet.len = 1;
                             sendto(listenfd, &packet, sizeof(packet), 0, (struct sockaddr *)&cliaddr, len);
                         }
@@ -206,6 +223,15 @@ int main(int argc, char *argv[]) {
                             memcpy(packet.data, &films[i], sizeof(struct staticFilme));
                             packet.id = i;
                             packet.total = count;
+                            packet.len = 1;
+                            sendto(listenfd, &packet, sizeof(packet), 0, (struct sockaddr *)&cliaddr, len);
+                        }
+
+                        printf("%d\n", count);
+                        if (count == 0) {
+                            printf("%d\n", count); 
+                            packet.id = 0;
+                            packet.total = -1;
                             packet.len = 1;
                             sendto(listenfd, &packet, sizeof(packet), 0, (struct sockaddr *)&cliaddr, len);
                         }
