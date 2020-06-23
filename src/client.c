@@ -12,7 +12,7 @@
 #include <common.h>
 #include <filme.h>
 
-// #define SERVER_IP "187.56.54.16"
+//#define SERVER_IP "187.35.197.154"
 #define SERVER_IP "localhost"
 
 #define TIMEOUT 10000
@@ -114,12 +114,12 @@ start_inserir:
         else if (!strcmp(type, "remover")) {
             packet.type = PT_REMOVE_FILME;
 
-	    int id;
+            int id;
             printf("ID: ");
             scanf(" %d", &id);
 
 start_remover:
-	    memcpy(&packet.data, &id, sizeof(id));
+            memcpy(&packet.data, &id, sizeof(id));
 
             struct timespec begin;
             clock_gettime(CLOCK_BOOTTIME, &begin);
@@ -187,7 +187,7 @@ start_listar_titulo:
 
 start_listar_genero:
             packet.type = PT_LIST_GENERO;
-	    memcpy(name, packet.data, sizeof(name));
+            memcpy(packet.data, name, sizeof(name));
 
             struct timespec begin;
             clock_gettime(CLOCK_BOOTTIME, &begin);
@@ -226,12 +226,12 @@ start_listar_genero:
         else if (!strcmp(type, "nome")) {
             packet.type = PT_FILM_NAME_FROM_ID;
 
-	    int id;
+            int id;
             printf("ID: ");
             scanf(" %d", &id);
 
 start_nome:
-	    memcpy(&packet.data, &id, sizeof(id));
+            memcpy(&packet.data, &id, sizeof(id));
 
             struct timespec begin;
             clock_gettime(CLOCK_BOOTTIME, &begin);
@@ -260,11 +260,11 @@ start_nome:
         else if (!strcmp(type, "info")) {
             packet.type = PT_FILM_INFO_FROM_ID;
 
-	    int id;
+            int id;
             printf("ID: ");
             scanf(" %d", &id);
 start_info:
-	    memcpy(&packet.data, &id, sizeof(id));
+            memcpy(&packet.data, &id, sizeof(id));
 
             struct timespec begin;
             clock_gettime(CLOCK_BOOTTIME, &begin);
